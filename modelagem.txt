@@ -6,5 +6,12 @@
 - o número de vezes que o caractere aparece é seu peso
 
 
+- primeiro passo: fazer o TAD arvore_bin
+	- a info vai ser um caracter
+	- o peso vai ser o número de ocorrências de cada caracter (adquirido daquele vetor)
+	
+- segundo passo: fazer o TAD lista de árvores
+
+
 
 - Usar Graphviz online para fazer os diagramas das árvores
