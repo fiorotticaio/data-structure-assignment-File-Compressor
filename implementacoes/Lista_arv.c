@@ -1,36 +1,39 @@
-#include "Lista.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../headers/Lista_arv.h"
 
 typedef struct celula Celula;
 
 struct lista {
     Celula* Prim;
     Celula* Ult;
+    int tam;
 };
 
 struct celula {
-    Aluno* aluno;
+    Arv* arvore;
     Celula* prox;
 };
 
 Lista* InicializaListaVazia() {
-    Lista* lista = (Lista*) malloc(sizeof(Lista));
+    Lista* lista = malloc(sizeof(Lista));
 
-    /* lista vazia */
     lista->Prim = NULL;
     lista->Ult = NULL;
+    lista->tam = 0;
 
     return lista;
 }
 
-void DestroiLista(Lista* lista) {
+void LiberaLista(Lista* lista) {
     Celula* p = lista->Prim;
     Celula* temp;
 
     while (p != NULL) {
         temp = p->prox;
+        abb_libera(p->arvore);
         free(p);
         p = temp;
     }
@@ -39,21 +42,20 @@ void DestroiLista(Lista* lista) {
 }
 
 void ImprimeLista(Lista* lista) {
+    if (lista->Prim == NULL) return;
+
     Celula* p;
+    // for (p = lista->Prim; p != NULL; p = p->prox) abb_imprime(p->arvore); printf("\n");
 
-    if (lista->Prim == NULL) {
-        printf("Lista vazia!\n");
-        return;
-    }
-
-    for (p = lista->Prim; p != NULL; p = p->prox) {
-        ImprimeAluno(p->aluno);
-    }
+    //impressao no formato graphviz
+    printf("digraph G {\n\n");
+    for (p = lista->Prim; p != NULL; p = p->prox) abb_imprime_formato_graphviz(p->arvore); printf("\n");
+    printf("}\n\n");
 }
 
-void InsereAlunoUlt(Lista* lista, Aluno* aluno) {
+void InsereArvUlt(Lista* lista, Arv* arvore) {
     Celula* nova = (Celula*) malloc(sizeof(Celula));
-    nova->aluno = aluno;
+    nova->arvore = arvore;
     nova->prox = NULL;
 
     if(lista->Prim == NULL) { // lista vazia
@@ -64,53 +66,117 @@ void InsereAlunoUlt(Lista* lista, Aluno* aluno) {
 
     lista->Ult->prox = nova; 
     lista->Ult = nova;
+
+    lista->tam++;
 }
 
-void InsereAlunoPrim(Lista* lista, Aluno* aluno) {
-    Celula* nova = (Celula*) malloc(sizeof(Celula));
+//TODO: retirar isso no futuro
 
-    nova->aluno = aluno;
-    nova->prox = lista->Prim;
-    lista->Prim = nova;
+// void InsereArvPrim(Lista* lista, Arv* aluno) {
+//     Celula* nova = (Celula*) malloc(sizeof(Celula));
 
-    if (lista->Ult == NULL) { // lista estava vazia inicialmente
-        lista->Ult = nova;
-    }
-}
+//     nova->aluno = aluno;
+//     nova->prox = lista->Prim;
+//     lista->Prim = nova;
 
-Aluno* RetiraAlunoLista(Lista* lista, char* nome) {
+//     if (lista->Ult == NULL) { // lista estava vazia inicialmente
+//         lista->Ult = nova;
+//     }
+// }
+
+Arv* RetiraArvLista(Lista* lista, Arv * arvore) {
     Celula* p = lista->Prim;
     Celula* ant = NULL; 
-    Aluno* aluno;
+    
+    while (p != NULL) {
+        if (p->arvore = arvore) break;
 
-    while (p != NULL && strcmp(RetornaNomeAluno(p->aluno), nome)) {
-        ant = p; // incremento
+        ant = p;
         p = p->prox;
     }
 
-    if (p == NULL) { // não encontrou o aluno ou a lista está vazia
-        printf("Lista vazia ou aluno %s nao encontrado\n", nome);
+    if (p==NULL) { // não encontrou o caractere ou a lista está vazia
+        printf("Lista vazia ou o caractere '%c' nao foi encontrado\n", getChar(arvore));
         return NULL;
     }
 
-    aluno = p->aluno;
-
-    if (p == lista->Prim && p == lista->Ult) { // lista com só 1 aluno
+    // lista com só 1 arvore
+    if (p == lista->Prim && p == lista->Ult) { 
         // lista volta a ficar vazia
         lista->Prim = NULL;
         lista->Ult = NULL;
 
-    } else if (lista->Prim == p) { // primera célula
+    // primera célula
+    } else if (lista->Prim == p) { 
         lista->Prim = p->prox;
 
-    } else if (lista->Ult == p) { // última célula
+    // última célula
+    } else if (lista->Ult == p) { 
         lista->Ult = ant;
         ant->prox = NULL;
 
-    } else { // célula no meio da lista
+    // célula no meio da lista
+    } else { 
         ant->prox = p->prox;
     }
 
     free(p);
-    return aluno;
+    lista->tam--;
+
+    return arvore;
+}
+
+void OrdenaLista(Lista * lista){
+    if (lista->Prim == NULL) return;
+
+    int precisaTrocar = 1;
+
+    Celula * p = NULL;
+    Celula * q = NULL;
+
+    do { 
+        precisaTrocar = 0; 
+        p = lista->Prim; 
+  
+        while (p->prox != q) 
+        { 
+            if (getPeso(p->arvore) > getPeso(p->prox->arvore)) 
+            { 
+                Arv * temp = p->arvore;
+                p->arvore = p->prox->arvore;
+                p->prox->arvore = temp;
+
+                precisaTrocar = 1; 
+            } 
+            p = p->prox; 
+        } 
+
+        q = p; 
+
+    } while (precisaTrocar);
+}
+
+//FIXME: deve ser feito com recursão?
+void Aplica_Huffman(Lista * lista){
+    if (lista->Prim == NULL) return;
+
+    Celula * p = lista->Prim;
+    Celula * prox = p->prox;
+    
+     while(p!=NULL && p->prox!=NULL) {
+        
+        long int pesoTotal = getPeso(p->arvore) + getPeso(p->prox->arvore);
+        Arv * a = abb_cria(0, '-', pesoTotal, p->arvore, p->prox->arvore);
+
+        prox = p->prox->prox;
+        Arv * remover1 = p->prox->arvore;
+        Arv * remover2 = p->arvore;
+
+        RetiraArvLista(lista, remover1);
+        RetiraArvLista(lista, remover2);
+        
+        p = prox;
+
+        InsereArvUlt(lista, a);
+    }
 }
