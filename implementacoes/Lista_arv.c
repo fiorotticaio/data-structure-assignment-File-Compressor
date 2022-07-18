@@ -89,7 +89,7 @@ Arv* RetiraArvLista(Lista* lista, Arv * arvore) {
     Celula* ant = NULL; 
     
     while (p != NULL) {
-        if (p->arvore = arvore) break;
+        if (p->arvore == arvore) break;
 
         ant = p;
         p = p->prox;
@@ -156,14 +156,14 @@ void OrdenaLista(Lista * lista){
     } while (precisaTrocar);
 }
 
-//FIXME: deve ser feito com recursão?
+//FIXME: deve ser feito com recursão? Acredito que não seja necessário
 void Aplica_Huffman(Lista * lista){
     if (lista->Prim == NULL) return;
 
     Celula * p = lista->Prim;
     Celula * prox = p->prox;
     
-     while(p!=NULL && p->prox!=NULL) {
+    while(p!=NULL && p->prox!=NULL) {
         
         long int pesoTotal = getPeso(p->arvore) + getPeso(p->prox->arvore);
         Arv * a = abb_cria(0, '-', pesoTotal, p->arvore, p->prox->arvore);
