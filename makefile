@@ -1,7 +1,6 @@
 prog: clear compacta 
 	@ ./compacta teste.txt
-	@ # ./descompacta teste.comp
-
+#	@ ./descompacta teste.comp
 
 valgrind: clear compacta
 	@ valgrind ./compacta teste.txt
