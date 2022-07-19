@@ -145,3 +145,12 @@ char getChar(Arv * a) { return a->info; }
 Arv * getRamoEsq(Arv * a) { return a->esq; }
 
 Arv * getRamoDir(Arv * a) { return a->dir; }
+
+int abb_vazia(Arv* a) { return a == NULL; }
+
+static int max(int a, int b) { return a > b ? a : b; }
+
+int abb_altura(Arv* a) {
+    if (abb_vazia(a)) return -1;
+    else return 1 + max(abb_altura(a->esq), abb_altura(a->dir));
+}
