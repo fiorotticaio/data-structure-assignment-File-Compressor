@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "./headers/Lista_arv.h"
+#include "./headers/bitmap.h"
 
 int main(int argc, char **argv) {
     //variaveis uteis    
@@ -46,6 +47,27 @@ int main(int argc, char **argv) {
     Aplica_Huffman(listaArvores);
 
     ImprimeLista(listaArvores);
+
+
+    int altura = calculaAlturaArvore_Huff(listaArvores);
+    printf("altura: %d\n", altura); // a altura da árvore é o número máximo de bits
+                                    // que um caracter pode ter na tabela de codificação
+
+
+    // abrindo o arquivo de entrada de novo pra ler o texto
+    FILE * entrada = fopen(path, "r");
+    //gerando o arquivo de saida
+    int qtdLetras = strlen(path);
+    path[qtdLetras-4] = '\0'; // tirar o .txt do path
+    FILE* saida = fopen(strcat(path, ".comp"), "w");
+
+    while(!feof(entrada)){
+        fscanf(entrada, "%c", &caractere);
+        // escrever o código de cada caracter (usando bitmap)
+    }
+    fclose(entrada);
+    fclose(saida);
+
 
     LiberaLista(listaArvores);
     free(v);
