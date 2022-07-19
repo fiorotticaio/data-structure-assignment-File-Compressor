@@ -180,3 +180,7 @@ void Aplica_Huffman(Lista * lista){
         InsereArvUlt(lista, a);
     }
 }
+
+int calculaAlturaArvore_Huff(Lista* lista) {
+    return abb_altura(lista->Prim->arvore);
+}
