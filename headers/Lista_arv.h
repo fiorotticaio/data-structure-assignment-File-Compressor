@@ -66,4 +66,12 @@ void OrdenaLista(Lista * lista);
  */
 void Aplica_Huffman(Lista * lista);
 
+/** Calcula a altura da árvore de huffman (primeira árvore da lista final)
+ * input: ponteiro para a lista
+ * output: altura da árvore de huffman (primeira árvore da lista)
+ * pré-condição: ponteiro para lista existe
+ * pós-condição: lista não é modificada
+ */
+int calculaAlturaArvore_Huff(Lista* lista);
+
 #endif // LISTA_H

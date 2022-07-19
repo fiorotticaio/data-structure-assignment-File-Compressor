@@ -112,4 +112,20 @@ Arv * getRamoEsq(Arv * a);
  */
 Arv * getRamoDir(Arv * a);
 
+/** Verifica se a árvore está vazia
+ * input: ponteiro para arvore
+ * output: 1 se a árvore estiver vazia, 0 caso contrário
+ * pré-condição: ponteiro para árvore existe
+ * pós-condição: arvore não é alterada
+ */
+int abb_vazia(Arv* a);
+
+/** Calcula a altura da árvore
+ * input: ponteiro para arvore
+ * output: altura da árvore
+ * pré-condição: ponteiro para árvore existe
+ * pós-condição: arvore não é alterada
+ */
+int abb_altura(Arv* a);
+
 #endif // ARVORE_BIN
