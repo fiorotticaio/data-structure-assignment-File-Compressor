@@ -52,13 +52,22 @@ void abb_imprime_formato_graphviz(Arv * a) {
     else printf("esp%ld\n", a->peso);
 }
 
-//TODO: retirar futuramente?
-// Arv* abb_busca(Arv* a, char caracter, long int peso) {
-//     if (a == NULL) return NULL;
-//     else if (getPeso(a) > peso) return abb_busca(a->esq, caracter, peso);
-//     else if (getPeso(a) < peso) return abb_busca(a->dir, caracter, peso);
-//     else return a;
-// }
+void abb_busca(Arv* a, char caractere, bitmap* bm) {
+    int i = 0;
+
+    if (a == NULL) return;
+    else if (getChar(a) == caractere) {
+        while(a->codigo[i]) {
+            bitmapAppendLeastSignificantBit(bm, a->codigo[i]);
+            i++;
+        }
+
+    } else {
+        abb_busca(a->esq, caractere, bm);
+        abb_busca(a->dir, caractere, bm);
+    }
+
+}
 
 Arv* abb_insere(Arv* a, char caracter, long int peso) {
     
@@ -215,7 +224,7 @@ void abb_codifica_nos(Arv* a, char* codigo) {
         codigo = realloc(codigo, sizeof(char)*(strlen(codigo) + 1));
         strcat(codigo, "0");
         abb_codifica_nos(a->esq, codigo);
-        
+
         a->dir->codigo = realloc(a->dir->codigo, sizeof(char)*(strlen(a->codigo) + 1));
         codigo = realloc(codigo, sizeof(char)*(strlen(codigo) + 1));
         strcat(aux, "1");

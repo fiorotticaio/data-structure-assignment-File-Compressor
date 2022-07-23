@@ -13,7 +13,11 @@ Lista_arv:
 	@ gcc -c ./implementacoes/Lista_arv.c -lm
 	@ echo "\033[1;32m[makefile] \033[mArquivo 'Lista_arv' compilado com sucesso! ✅"
 
-compacta: Arvore_bin Lista_arv
+bitmap:
+	@ gcc -c ./implementacoes/bitmap.c -lm
+	@ echo "\033[1;32m[makefile] \033[mArquivo 'bitmap' compilado com sucesso! ✅"
+
+compacta: bitmap Arvore_bin Lista_arv
 	@ gcc -o compacta *.o compacta.c -lm
 	@ echo "\033[1;32m[makefile] \033[mArquivo 'compacta' gerado com sucesso! ✅"
 

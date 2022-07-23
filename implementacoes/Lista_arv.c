@@ -194,4 +194,3 @@ void CodificaNos(Lista* lista) {
     abb_codifica_nos(lista->Prim->arvore, codigo);
     free(codigo);
 }
-

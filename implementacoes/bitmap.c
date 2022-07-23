@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "bitmap.h"
+#include "../headers/bitmap.h"
 
 struct map {
     unsigned int max_size;        ///< tamanho maximo em bits

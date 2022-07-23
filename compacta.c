@@ -70,21 +70,41 @@ int main(int argc, char **argv) {
     path[qtdLetras-4] = '\0'; // tirar o .txt do path
     FILE* saida = fopen(strcat(path, ".comp"), "w");
 
+    FILE* saida2 = fopen("saida2.txt", "w");
+
 
     // criando o bitmap
     bitmap* bm = bitmapInit(MAX_SIZE);
+    i = 0;
+    int total_gravado = 0;
+    char charzao[1000000];
 
-    // while(!feof(entrada)){
-    //     fscanf(entrada, "%c", &caractere);
-    //     printf("%c - %ld\n", caractere, v[caractere]);
-        // abb_get_codigo(getPrimeiroNo(listaArvores), caractere, v[caractere], codigo);
-        // printf(" - %s\n", codigo);
-    // }
+    while(!feof(entrada)){
+        fscanf(entrada, "%c", &caractere);
+        abb_busca(getPrimeiroNo(listaArvores), caractere, bm);
+        i++;
+    }
+
+    printf("%d\n", bitmapGetLength(bm));
+
+    for (j = 0; j < bitmapGetLength(bm); j++) {
+        fprintf(saida2, "%0x", bitmapGetBit(bm, j));
+        sprintf(charzao, "%s%0x", charzao, bitmapGetBit(bm, j));
+    }
+    
+    total_gravado = fwrite(charzao, sizeof(char), strlen(charzao), saida);
+    
+    printf("total gravado: %d\n", total_gravado);
+
+    
+    // printf("%0x\n", bitmapGetContents(bm)[0]);
+    // printf("%0x\n", bitmapGetContents(bm)[1]);
 
     fclose(entrada);
     fclose(saida);
+    fclose(saida2);
 
-
+    bitmapLibera(bm);
     LiberaLista(listaArvores);
     free(v);
 

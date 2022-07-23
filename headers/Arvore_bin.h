@@ -1,6 +1,8 @@
 #ifndef ARVORE_BIN
 #define ARVORE_BIN
 
+#include "../headers/bitmap.h"
+
 // Tipo Arv (árvore binária)
 typedef struct arv Arv;
 
@@ -50,7 +52,7 @@ void abb_imprime_formato_graphviz(Arv * a);
  *               ponteiro para vetor de pesos existe
  * pós-condição: ponteiro de retorno aponta para o nó da árvore que contém o caracter buscado
  */
-Arv* abb_busca(Arv* a, char caracter, long int peso);
+void abb_busca(Arv* a, char caracter, bitmap* bm);
 
 /** Insere um caracter na árovre binária
  * input: ponteiro para a árvore, caracter a ser inserido,
