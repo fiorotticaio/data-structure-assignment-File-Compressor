@@ -80,6 +80,8 @@ Arv* abb_retira(Arv* a, char caracter, long int peso);
  */
 Arv* abb_libera(Arv* a);
 
+void setCodigo(Arv* a, char* codigo);
+
 /** Retorna o peso do caractere localizado em um nó
  * input: ponteiro para arvore com o nó
  * output: inteiro com valor do peso do caractere
@@ -127,5 +129,9 @@ int abb_vazia(Arv* a);
  * pós-condição: arvore não é alterada
  */
 int abb_altura(Arv* a);
+
+void abb_get_codigo(Arv* a, char caractere, long int peso, char* codigo);
+
+void abb_codifica_nos(Arv* a, char* codigo);
 
 #endif // ARVORE_BIN

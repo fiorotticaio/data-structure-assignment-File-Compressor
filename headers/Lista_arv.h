@@ -74,4 +74,8 @@ void Aplica_Huffman(Lista * lista);
  */
 int calculaAlturaArvore_Huff(Lista* lista);
 
+Arv* getPrimeiroNo(Lista* lista);
+
+void CodificaNos(Lista* lista);
+
 #endif // LISTA_H

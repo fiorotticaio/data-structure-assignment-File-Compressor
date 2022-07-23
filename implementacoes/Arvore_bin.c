@@ -7,6 +7,7 @@
 struct arv {
     char info;
     long int peso;
+    char* codigo;
     struct arv *esq;
     struct arv *dir;
 };
@@ -22,7 +23,7 @@ Arv* abb_cria(int ehFolha, char caracter, long int peso, Arv* e, Arv* d) {
     // else p->info = NULL;
     
     p->info = caracter;
-
+    p->codigo = strdup("");
     p->peso = peso;
     p->esq = e;
     p->dir = d;
@@ -32,7 +33,7 @@ Arv* abb_cria(int ehFolha, char caracter, long int peso, Arv* e, Arv* d) {
 void abb_imprime(Arv* a) {
     printf("<");
     if (a != NULL) {
-        if (a->info != '-') printf("[%c - %ld]", a->info, a->peso);
+        if (a->info != '-') printf("[%c - %ld - %s]", a->info, a->peso, a->codigo);
         else printf("[%ld]", a->peso);
         abb_imprime(a->esq);
         abb_imprime(a->dir);
@@ -133,9 +134,15 @@ Arv* abb_libera(Arv* a) {
     if (a != NULL) {
         abb_libera(a->esq);
         abb_libera(a->dir);
+        free(a->codigo);
         free(a);
     }
     return NULL;
+}
+
+void setCodigo(Arv* a, char* codigo) {
+    a->codigo = realloc(a->codigo, strlen(codigo));
+    strcpy(a->codigo, codigo);
 }
 
 long int getPeso(Arv * a) { return a->peso; }
@@ -154,3 +161,74 @@ int abb_altura(Arv* a) {
     if (abb_vazia(a)) return -1;
     else return 1 + max(abb_altura(a->esq), abb_altura(a->dir));
 }
+
+void abb_get_codigo(Arv* a, char caractere, long int peso, char* codigo) {
+
+    printf("getChar: %c - caractere: %c - getPeso: %ld - peso: %ld\n", getChar(a), caractere, getPeso(a), peso);
+
+    if (a == NULL) {
+        printf("null\n");
+        return;
+
+    }  else if (getChar(a) != caractere && getPeso(a) > peso) {
+        printf("direita\n");
+        // strcat(codigo, "0"); // esquerda -> 0
+        abb_get_codigo(a->dir, caractere, peso, codigo);
+
+    } else if (getChar(a) != caractere && getPeso(a) < peso) {
+        printf("esquerda\n");
+        // strcat(codigo, "1"); // direita -> 1
+        abb_get_codigo(a->esq, caractere, peso, codigo);
+
+    } else if (getPeso(a) == peso && getChar(a) == caractere) { // chegou
+        printf("chegou\n");
+        return;
+    }
+}
+
+void add_codigo(Arv* a, char* codigo) {
+    // printf("%d\n", strlen(a->codigo));
+    a->codigo = (char*)realloc(a->codigo, sizeof(char)*(strlen(a->codigo) + 1));
+    a->codigo = strcat(a->codigo, codigo);
+}
+
+void abb_codifica_nos(Arv* a, char* codigo) {
+    if (a->esq == NULL && a->dir == NULL) { // no folha
+        setCodigo(a, codigo);
+
+    } else if (a->esq == NULL && a->dir != NULL) { // vai pra direita
+        a->dir->codigo = realloc(a->dir->codigo, sizeof(char)*(strlen(a->codigo) + 1));
+        codigo = realloc(codigo, sizeof(char)*(strlen(codigo) + 1));
+        strcat(codigo, "1");
+        abb_codifica_nos(a->dir, codigo);
+
+    } else if (a->esq != NULL && a->dir == NULL) { // vai pra esquerda
+        a->esq->codigo = realloc(a->esq->codigo, sizeof(char)*(strlen(a->codigo) + 1));
+        codigo = realloc(codigo, sizeof(char)*(strlen(codigo) + 1));
+        strcat(codigo, "0");
+        abb_codifica_nos(a->esq, codigo);
+
+    } else {
+        char* aux = strdup(codigo);
+
+        a->esq->codigo = realloc(a->esq->codigo, sizeof(char)*(strlen(a->codigo) + 1));
+        codigo = realloc(codigo, sizeof(char)*(strlen(codigo) + 1));
+        strcat(codigo, "0");
+        abb_codifica_nos(a->esq, codigo);
+        
+        a->dir->codigo = realloc(a->dir->codigo, sizeof(char)*(strlen(a->codigo) + 1));
+        codigo = realloc(codigo, sizeof(char)*(strlen(codigo) + 1));
+        strcat(aux, "1");
+        abb_codifica_nos(a->dir, aux);
+
+        free(aux);
+    }
+}
+
+
+
+
+
+
+
+

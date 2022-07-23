@@ -5,6 +5,8 @@
 #include "./headers/Lista_arv.h"
 #include "./headers/bitmap.h"
 
+#define MAX_SIZE 1000000 // teste com 1 MEGA bytes
+
 int main(int argc, char **argv) {
     //variaveis uteis    
     int i=0, j=0, n=0;
@@ -46,8 +48,15 @@ int main(int argc, char **argv) {
 
     Aplica_Huffman(listaArvores);
 
+    CodificaNos(listaArvores);
+
     ImprimeLista(listaArvores);
 
+
+
+
+
+    /*=========== Escrevendo no arquivo binário =========================*/
 
     int altura = calculaAlturaArvore_Huff(listaArvores);
     printf("altura: %d\n", altura); // a altura da árvore é o número máximo de bits
@@ -61,10 +70,17 @@ int main(int argc, char **argv) {
     path[qtdLetras-4] = '\0'; // tirar o .txt do path
     FILE* saida = fopen(strcat(path, ".comp"), "w");
 
-    while(!feof(entrada)){
-        fscanf(entrada, "%c", &caractere);
-        // escrever o código de cada caracter (usando bitmap)
-    }
+
+    // criando o bitmap
+    bitmap* bm = bitmapInit(MAX_SIZE);
+
+    // while(!feof(entrada)){
+    //     fscanf(entrada, "%c", &caractere);
+    //     printf("%c - %ld\n", caractere, v[caractere]);
+        // abb_get_codigo(getPrimeiroNo(listaArvores), caractere, v[caractere], codigo);
+        // printf(" - %s\n", codigo);
+    // }
+
     fclose(entrada);
     fclose(saida);
 
