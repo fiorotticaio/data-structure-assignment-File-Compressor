@@ -5,17 +5,17 @@ https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/
 
 ## Etapas e TODO's
 
-    [ ] Usar um menor número de bits para caracteres que aparecem mais vezes
+    [x] Usar um menor número de bits para caracteres que aparecem mais vezes
     
-    [ ] implementando com árvore binária que armazena caracteres nas folhas
+    [x] implementando com árvore binária que armazena caracteres nas folhas
 
-    [ ] caminhos da raiz até a folha que provém a sequência de bits de cada caractere
+    [x] caminhos da raiz até a folha que provém a sequência de bits de cada caractere
         
-        [ ] sub-árvore da direita: 1
+        [x] sub-árvore da direita: 1
 
-        [ ] sub-árvore da esquerda: 0
+        [x] sub-árvore da esquerda: 0
 
-    [ ] o número de vezes que o caractere aparece é seu peso
+    [x] o número de vezes que o caractere aparece é seu peso
 
     [x] primeiro passo: fazer o TAD arvore_bin
 
@@ -34,3 +34,8 @@ https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/
     [x] Usar Graphviz online para fazer os diagramas das árvores
 
     [ ] Verificar documentação dos cabeçalhos (.h)
+
+    [ ] Descobrir como usar o bitmap
+        (escrever arquivos .comp)
+
+    [ ] Descobrir como serielizar a árvore
