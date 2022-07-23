@@ -74,8 +74,20 @@ void Aplica_Huffman(Lista * lista);
  */
 int calculaAlturaArvore_Huff(Lista* lista);
 
+/** Retorna a primeira árvore de uma lista de árvores
+ * input: ponteiro para a lista
+ * output: ponteiro para a primeira árvore da lista
+ * pré-condição: ponteiro para lista existe
+ * pós-condição: lista não é modificada
+ */
 Arv* getPrimeiroNo(Lista* lista);
 
+/** Codifica todos os nós folha da árvore de huffman (primeira árvore da lista final)
+ * input: ponteiro para a lista
+ * output: nenhum
+ * pré-condição: ponteiro para lista existe
+ * pós-condição: campo de código preenchido para todos os nós folha da árvore de huffman
+ */
 void CodificaNos(Lista* lista);
 
 #endif // LISTA_H

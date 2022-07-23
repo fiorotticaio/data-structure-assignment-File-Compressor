@@ -44,15 +44,14 @@ void abb_imprime(Arv* a);
  */
 void abb_imprime_formato_graphviz(Arv * a);
 
-/** Busca por um caracter na árvore binária
- * input: ponteiro para a árvore, caracter a ser buscado,
- *        peso do caractere
- * output: nó da arovre que contém o caracter buscado (NULL caso não exista)
- * pré-condição: ponteiro para árvore existe, caracter válido,
- *               ponteiro para vetor de pesos existe
- * pós-condição: ponteiro de retorno aponta para o nó da árvore que contém o caracter buscado
+/** Gera o bitmap
+ * input: ponteiro para a árvore de huffman, caracter a ser codificado,
+ *        e o bitmap que está sendo gerado
+ * output: nenhum
+ * pré-condição: ponteiro para a árvore existe
+ * pós-condição: nenhuma
  */
-void abb_busca(Arv* a, char caracter, bitmap* bm);
+void preenche_bitmap(Arv* a, char caracter, bitmap* bm);
 
 /** Insere um caracter na árovre binária
  * input: ponteiro para a árvore, caracter a ser inserido,
@@ -82,6 +81,12 @@ Arv* abb_retira(Arv* a, char caracter, long int peso);
  */
 Arv* abb_libera(Arv* a);
 
+/** Seta o código do nó
+ * input: ponteiro para arvore binári e ponteiro para o código a ser setado
+ * output: nenhum
+ * pré-condição: ponteiro para árvore e código existem
+ * pós-condição: campo de código do nó é atualizado
+ */
 void setCodigo(Arv* a, char* codigo);
 
 /** Retorna o peso do caractere localizado em um nó
@@ -132,8 +137,12 @@ int abb_vazia(Arv* a);
  */
 int abb_altura(Arv* a);
 
-void abb_get_codigo(Arv* a, char caractere, long int peso, char* codigo);
-
+/** Codifica todos os nós folha da árvore de huffman
+ * input: ponteiro para arvore e ponteiro para o código a ser inserido no nó
+ * output: nenhum
+ * pré-condição: ponteiro para árvore e código existem
+ * pós-condição: campo código de todos os nós folha preenchidos
+ */
 void abb_codifica_nos(Arv* a, char* codigo);
 
 #endif // ARVORE_BIN
