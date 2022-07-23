@@ -52,19 +52,23 @@ void abb_imprime_formato_graphviz(Arv * a) {
     else printf("esp%ld\n", a->peso);
 }
 
-void abb_busca(Arv* a, char caractere, bitmap* bm) {
+void preenche_bitmap(Arv* a, char caractere, bitmap* bm) {
     int i = 0;
 
     if (a == NULL) return;
     else if (getChar(a) == caractere) {
         while(a->codigo[i]) {
             bitmapAppendLeastSignificantBit(bm, a->codigo[i]);
+            // print 1
+            // print a->codido
             i++;
         }
 
     } else {
-        abb_busca(a->esq, caractere, bm);
-        abb_busca(a->dir, caractere, bm);
+        preenche_bitmap(a->esq, caractere, bm);
+        // print 0
+        preenche_bitmap(a->dir, caractere, bm);
+        // print 0
     }
 
 }
@@ -169,36 +173,6 @@ static int max(int a, int b) { return a > b ? a : b; }
 int abb_altura(Arv* a) {
     if (abb_vazia(a)) return -1;
     else return 1 + max(abb_altura(a->esq), abb_altura(a->dir));
-}
-
-void abb_get_codigo(Arv* a, char caractere, long int peso, char* codigo) {
-
-    printf("getChar: %c - caractere: %c - getPeso: %ld - peso: %ld\n", getChar(a), caractere, getPeso(a), peso);
-
-    if (a == NULL) {
-        printf("null\n");
-        return;
-
-    }  else if (getChar(a) != caractere && getPeso(a) > peso) {
-        printf("direita\n");
-        // strcat(codigo, "0"); // esquerda -> 0
-        abb_get_codigo(a->dir, caractere, peso, codigo);
-
-    } else if (getChar(a) != caractere && getPeso(a) < peso) {
-        printf("esquerda\n");
-        // strcat(codigo, "1"); // direita -> 1
-        abb_get_codigo(a->esq, caractere, peso, codigo);
-
-    } else if (getPeso(a) == peso && getChar(a) == caractere) { // chegou
-        printf("chegou\n");
-        return;
-    }
-}
-
-void add_codigo(Arv* a, char* codigo) {
-    // printf("%d\n", strlen(a->codigo));
-    a->codigo = (char*)realloc(a->codigo, sizeof(char)*(strlen(a->codigo) + 1));
-    a->codigo = strcat(a->codigo, codigo);
 }
 
 void abb_codifica_nos(Arv* a, char* codigo) {

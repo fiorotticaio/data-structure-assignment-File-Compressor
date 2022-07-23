@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
 
     while(!feof(entrada)){
         fscanf(entrada, "%c", &caractere);
-        abb_busca(getPrimeiroNo(listaArvores), caractere, bm);
+        preenche_bitmap(getPrimeiroNo(listaArvores), caractere, bm);
         i++;
     }
 
