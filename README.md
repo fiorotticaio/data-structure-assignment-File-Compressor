@@ -32,6 +32,8 @@ https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/
         [x] função de Huffman
 
     [x] Usar Graphviz online para fazer os diagramas das árvores
+    
+    <strong>[ ] TROCAR TODOS OS <code>char</code> PARA <code>unsigned char</code> </strong>
 
     [ ] Verificar documentação dos cabeçalhos (.h)
 
