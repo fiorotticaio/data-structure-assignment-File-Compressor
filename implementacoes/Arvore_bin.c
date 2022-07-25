@@ -5,9 +5,9 @@
 #include "../headers/Arvore_bin.h"
 
 struct arv {
-    char info;
+    unsigned char info;
     long int peso;
-    char* codigo;
+    unsigned char* codigo;
     struct arv *esq;
     struct arv *dir;
 };
@@ -16,7 +16,7 @@ Arv* abb_cria_vazia(void) {
     return NULL;
 }
 
-Arv* abb_cria(int ehFolha, char caracter, long int peso, Arv* e, Arv* d) {
+Arv* abb_cria(int ehFolha, unsigned char caracter, long int peso, Arv* e, Arv* d) {
     Arv* p = (Arv*) malloc(sizeof(Arv));
     
     // if (ehFolha) p->info = caracter;
@@ -52,7 +52,7 @@ void abb_imprime_formato_graphviz(Arv * a) {
     else printf("esp%ld\n", a->peso);
 }
 
-void preenche_bitmap(Arv* a, char caractere, bitmap* bm) {
+void preenche_bitmap(Arv* a, unsigned char caractere, bitmap* bm) {
     int i = 0;
 
     if (a == NULL) return;
@@ -73,7 +73,7 @@ void preenche_bitmap(Arv* a, char caractere, bitmap* bm) {
 
 }
 
-Arv* abb_insere(Arv* a, char caracter, long int peso) {
+Arv* abb_insere(Arv* a, unsigned char caracter, long int peso) {
     
     // árvore vazia 
     if (a == NULL) { 
@@ -98,7 +98,7 @@ Arv* abb_insere(Arv* a, char caracter, long int peso) {
     return a;
 }
 
-Arv* abb_retira(Arv* a, char caracter, long int peso) {
+Arv* abb_retira(Arv* a, unsigned char caracter, long int peso) {
     
     //ramo acabou e não achou
     if (a == NULL) {
@@ -153,14 +153,14 @@ Arv* abb_libera(Arv* a) {
     return NULL;
 }
 
-void setCodigo(Arv* a, char* codigo) {
+void setCodigo(Arv* a, unsigned char* codigo) {
     a->codigo = realloc(a->codigo, strlen(codigo));
     strcpy(a->codigo, codigo);
 }
 
 long int getPeso(Arv * a) { return a->peso; }
 
-char getChar(Arv * a) { return a->info; }
+unsigned char getChar(Arv * a) { return a->info; }
 
 Arv * getRamoEsq(Arv * a) { return a->esq; }
 
@@ -175,32 +175,32 @@ int abb_altura(Arv* a) {
     else return 1 + max(abb_altura(a->esq), abb_altura(a->dir));
 }
 
-void abb_codifica_nos(Arv* a, char* codigo) {
+void abb_codifica_nos(Arv* a, unsigned char* codigo) {
     if (a->esq == NULL && a->dir == NULL) { // no folha
         setCodigo(a, codigo);
 
     } else if (a->esq == NULL && a->dir != NULL) { // vai pra direita
-        a->dir->codigo = realloc(a->dir->codigo, sizeof(char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(char)*(strlen(codigo) + 1));
+        a->dir->codigo = realloc(a->dir->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
+        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
         strcat(codigo, "1");
         abb_codifica_nos(a->dir, codigo);
 
     } else if (a->esq != NULL && a->dir == NULL) { // vai pra esquerda
-        a->esq->codigo = realloc(a->esq->codigo, sizeof(char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(char)*(strlen(codigo) + 1));
+        a->esq->codigo = realloc(a->esq->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
+        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
         strcat(codigo, "0");
         abb_codifica_nos(a->esq, codigo);
 
     } else {
-        char* aux = strdup(codigo);
+        unsigned char* aux = strdup(codigo);
 
-        a->esq->codigo = realloc(a->esq->codigo, sizeof(char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(char)*(strlen(codigo) + 1));
+        a->esq->codigo = realloc(a->esq->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
+        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
         strcat(codigo, "0");
         abb_codifica_nos(a->esq, codigo);
 
-        a->dir->codigo = realloc(a->dir->codigo, sizeof(char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(char)*(strlen(codigo) + 1));
+        a->dir->codigo = realloc(a->dir->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
+        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
         strcat(aux, "1");
         abb_codifica_nos(a->dir, aux);
 

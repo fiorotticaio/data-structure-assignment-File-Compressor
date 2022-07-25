@@ -26,7 +26,7 @@ Arv* abb_cria_vazia(void);
  *               ponteiros para árvore esquerda e direita existem
  * pós-condição: ponteiro de retorno aponta para a árvore criada
  */
-Arv* abb_cria(int ehFolha, char caracter, long int peso, Arv* e, Arv* d);
+Arv* abb_cria(int ehFolha, unsigned char caracter, long int peso, Arv* e, Arv* d);
 
 /** Imprime árvore binária
  * input: ponteiro para árvore
@@ -51,7 +51,7 @@ void abb_imprime_formato_graphviz(Arv * a);
  * pré-condição: ponteiro para a árvore existe
  * pós-condição: nenhuma
  */
-void preenche_bitmap(Arv* a, char caracter, bitmap* bm);
+void preenche_bitmap(Arv* a, unsigned char caracter, bitmap* bm);
 
 /** Insere um caracter na árovre binária
  * input: ponteiro para a árvore, caracter a ser inserido,
@@ -61,7 +61,7 @@ void preenche_bitmap(Arv* a, char caracter, bitmap* bm);
  *               ponteiro para vetor de pesos existe
  * pós-condição: ponteiro de retorno aponta para árvore com o caracter adicionado
  */
-Arv* abb_insere(Arv* a, char caracter, long int peso);
+Arv* abb_insere(Arv* a, unsigned char caracter, long int peso);
 
 /** Retira um caracter da árvore binária
  * input: ponteiro para a árvore, caracter a ser retirado,
@@ -71,7 +71,7 @@ Arv* abb_insere(Arv* a, char caracter, long int peso);
  *               ponteiro para vetor de pesos existe
  * pós-condição: ponteiro de retorno aponta para árvore agora sem o caracter
  */
-Arv* abb_retira(Arv* a, char caracter, long int peso);
+Arv* abb_retira(Arv* a, unsigned char caracter, long int peso);
 
 /** Livra memória alocada para a árvore binária
  * input: ponteiro para árovre a ser liberada
@@ -87,7 +87,7 @@ Arv* abb_libera(Arv* a);
  * pré-condição: ponteiro para árvore e código existem
  * pós-condição: campo de código do nó é atualizado
  */
-void setCodigo(Arv* a, char* codigo);
+void setCodigo(Arv* a, unsigned char* codigo);
 
 /** Retorna o peso do caractere localizado em um nó
  * input: ponteiro para arvore com o nó
@@ -103,7 +103,7 @@ long int getPeso(Arv * a);
  * pré-condição: ponteiro para árvore existe
  * pós-condição: arvore não é alterada
  */
-char getChar(Arv * a);
+unsigned char getChar(Arv * a);
 
 /** Retorna o ponteiro para o ramo esquerdo da arvore
  * input: ponteiro para arvore
@@ -143,6 +143,6 @@ int abb_altura(Arv* a);
  * pré-condição: ponteiro para árvore e código existem
  * pós-condição: campo código de todos os nós folha preenchidos
  */
-void abb_codifica_nos(Arv* a, char* codigo);
+void abb_codifica_nos(Arv* a, unsigned char* codigo);
 
 #endif // ARVORE_BIN

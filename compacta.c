@@ -7,11 +7,11 @@
 
 #define MAX_SIZE 1000000 // teste com 1 MEGA bytes
 
-int main(int argc, char **argv) {
+int main(int argc, unsigned char**argv) {
     //variaveis uteis    
     int i=0, j=0, n=0;
-    char path[100];
-    char caractere='\0';
+    unsigned char path[100];
+    unsigned char caractere='\0';
     long int *v = malloc(sizeof(long int) * 256);
 
 
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
     bitmap* bm = bitmapInit(MAX_SIZE);
     i = 0;
     int total_gravado = 0;
-    char charzao[1000000];
+    unsigned char charzao[1000000];
 
     while(!feof(entrada)){
         fscanf(entrada, "%c", &caractere);

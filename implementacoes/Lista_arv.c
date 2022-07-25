@@ -190,7 +190,7 @@ Arv* getPrimeiroNo(Lista* lista) {
 }
 
 void CodificaNos(Lista* lista) {
-    char* codigo = strdup("");
+    unsigned char* codigo = strdup("");
     abb_codifica_nos(lista->Prim->arvore, codigo);
     free(codigo);
 }
