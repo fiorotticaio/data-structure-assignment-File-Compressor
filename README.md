@@ -33,7 +33,7 @@ https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/
 
     [x] Usar Graphviz online para fazer os diagramas das árvores
     
-    <strong>[ ] TROCAR TODOS OS <code>char</code> PARA <code>unsigned char</code> </strong>
+    [ ] TROCAR TODOS OS char PARA unsigned char </strong>
 
     [ ] Verificar documentação dos cabeçalhos (.h)
 
