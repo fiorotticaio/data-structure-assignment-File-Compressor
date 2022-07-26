@@ -145,4 +145,40 @@ int abb_altura(Arv* a);
  */
 void abb_codifica_nos(Arv* a, unsigned char* codigo);
 
+/** Aloca memória para a tabela de codificação
+ * input: número de colunas da tabela
+ * output: ponteiro para tabela de codificação (ponteiro para vetor de ponteiros)
+ * pré-condição: número de colunas válido
+ * pós-condição: memória para a tabela de codificação é alocada
+ */
+unsigned char** alocaTabela(int colunas);
+
+/** Faz a codificação para a tabela de codificação
+ * input: ponteiro para a tabela de codificação, ponteiro para nó raiz da árvore de huffman
+ *        ponteiro para o código (caminho) a ser inserido no nó, número de colunas da tabela
+ * output: nenhum
+ * pré-condição: ponteiro para a tebela de codificação existe, ponteiro para nó raiz da árvore existe,
+ *               ponteiro para código existe, número de colunas válido 
+ * pós-condição: tabela de codificação é preenchida
+ */
+void geraTabCode(unsigned char** tabela, Arv* a, char* caminho, int colunas);
+
+/** Imprime a tabela de codificação
+ * input: ponteiro para a tabela de codificação
+ * output: nenhum
+ * pré-condição: ponteiro para a tabela de codificação existe
+ * pós-condição: tabela não é alterada
+ */
+void imprimeTabCode(unsigned char** tabela);
+
+/** Libera toda a memória alocada para a tabela de codificação
+ * input: ponteiro para a tabela de codificação
+ * output: nenhum
+ * pré-condição: ponteiro para a tabela de codificação existe
+ * pós-condição: toda a memória alocada para a tabela de codificação é liberada
+ */
+void liberaTabCode(unsigned char** tabela);
+
+void codifica(unsigned char** tabela, bitmap* bm, unsigned char caractere);
+
 #endif // ARVORE_BIN

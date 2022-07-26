@@ -208,6 +208,61 @@ void abb_codifica_nos(Arv* a, unsigned char* codigo) {
     }
 }
 
+unsigned char** alocaTabela(int colunas) {
+    /* tabela: vetor de strings */
+    unsigned char** tabela = (unsigned char**) malloc(sizeof(unsigned char*)*256);
+    for (int i = 0; i < 256; i++) {
+        tabela[i] = (unsigned char*) calloc(colunas, sizeof(unsigned char));
+        // calloc: ao mesmo tempo que aloca espaço também inicializa
+    }
+    return tabela;
+}
+
+void geraTabCode(unsigned char** tabela, Arv* a, char* caminho, int colunas) {
+    char esq[colunas], dir[colunas];
+
+    // verficando se é nó folha
+    if (a->esq == NULL && a->dir == NULL) {
+        strcpy(tabela[a->info], caminho);
+
+    } else {
+        // gerando caminhos para subárvores
+        strcpy(esq, caminho);
+        strcpy(dir, caminho);
+        strcat(esq, "0");
+        strcat(dir, "1");
+        geraTabCode(tabela, a->esq, esq, colunas);
+        geraTabCode(tabela, a->dir, dir, colunas);
+    }
+}
+
+void imprimeTabCode(unsigned char** tabela) {
+    int i = 0;
+    for (i = 0; i < 256; i++) {
+        if (strlen(tabela[i]) > 0) printf("%d - %c: %s\n", i, i, tabela[i]); // imprimir os que não são zero
+    }
+}
+
+void liberaTabCode(unsigned char** tabela) {
+    for (int i = 0; i < 256; i++) {
+        free(tabela[i]);
+    }
+    free(tabela);
+}
+
+void codifica(unsigned char** tabela, bitmap* bm, unsigned char caractere) {
+    /* não sei o porquê não funciona */
+    int i = 0;
+    while(tabela[caractere][i] != '\0') {
+        if (tabela[caractere][i] == '0') {
+            bitmapAppendLeastSignificantBit(bm, 0);
+        } else {
+            bitmapAppendLeastSignificantBit(bm, 1);
+        }
+        i++;
+    }
+}
+
 
 
 

@@ -9,9 +9,9 @@
 
 int main(int argc, unsigned char**argv) {
     //variaveis uteis    
-    int i=0, j=0, n=0;
+    int i = 0, j = 0, n = 0;
     unsigned char path[100];
-    unsigned char caractere='\0';
+    unsigned char caractere = '\0';
     long int *v = malloc(sizeof(long int) * 256);
 
 
@@ -48,20 +48,23 @@ int main(int argc, unsigned char**argv) {
 
     Aplica_Huffman(listaArvores);
 
-    CodificaNos(listaArvores);
+    // CodificaNos(listaArvores); acho que não vai precisar mais
+    // era fonte de um monte daqueles ERROS
 
     ImprimeLista(listaArvores);
 
 
 
 
-
-    /*=========== Escrevendo no arquivo binário =========================*/
-
+    /*====== montando a tabela de codificação ===========*/
     int altura = calculaAlturaArvore_Huff(listaArvores);
-    printf("altura: %d\n", altura); // a altura da árvore é o número máximo de bits
-                                    // que um caracter pode ter na tabela de codificação
+    unsigned char** tabCode = alocaTabela(altura+1);
+    geraTabCode(tabCode, getPrimeiroNo(listaArvores), "", altura+1);
+    imprimeTabCode(tabCode);
+    liberaTabCode(tabCode);
 
+
+    /*=========== Escrevendo no arquivo com bitmap (codificando) =========================*/
 
     // abrindo o arquivo de entrada de novo pra ler o texto
     FILE * entrada = fopen(path, "r");
@@ -70,39 +73,31 @@ int main(int argc, unsigned char**argv) {
     path[qtdLetras-4] = '\0'; // tirar o .txt do path
     FILE* saida = fopen(strcat(path, ".comp"), "w");
 
-    FILE* saida2 = fopen("saida2.txt", "w");
-
-
     // criando o bitmap
     bitmap* bm = bitmapInit(MAX_SIZE);
-    i = 0;
-    int total_gravado = 0;
-    unsigned char charzao[1000000];
+    int total_gravado = 0, qtdBytes = 0;
 
+    // loop pra preencher o bitmap
     while(!feof(entrada)){
         fscanf(entrada, "%c", &caractere);
-        preenche_bitmap(getPrimeiroNo(listaArvores), caractere, bm);
-        i++;
+        // codifica(tabCode, bm, caractere); // não sei o porquê não funciona
+        // preenche_bitmap(getPrimeiroNo(listaArvores), caractere, bm); // antiga
+        // total_gravado = fwrite(bm, sizeof(bitmap*), 8, saida); // isso ta errado
+        qtdBytes++;
     }
 
-    printf("%d\n", bitmapGetLength(bm));
+    i = 0;
+	for (i = 0; i < bitmapGetLength(bm); i++) {
+		printf("bit #%d = %0x\n", i, bitmapGetBit(bm, i));
+	}
 
-    for (j = 0; j < bitmapGetLength(bm); j++) {
-        fprintf(saida2, "%0x", bitmapGetBit(bm, j));
-        sprintf(charzao, "%s%0x", charzao, bitmapGetBit(bm, j));
-    }
-    
-    total_gravado = fwrite(charzao, sizeof(char), strlen(charzao), saida);
-    
+    printf("\n");
+    printf("bm length: %d\n", bitmapGetLength(bm));
+    printf("qtdBytes: %d\n", qtdBytes);
     printf("total gravado: %d\n", total_gravado);
-
-    
-    // printf("%0x\n", bitmapGetContents(bm)[0]);
-    // printf("%0x\n", bitmapGetContents(bm)[1]);
 
     fclose(entrada);
     fclose(saida);
-    fclose(saida2);
 
     bitmapLibera(bm);
     LiberaLista(listaArvores);
