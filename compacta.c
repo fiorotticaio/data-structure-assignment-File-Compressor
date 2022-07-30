@@ -63,6 +63,7 @@ int main(int argc, unsigned char**argv) {
     imprimeTabCode(tabCode);
 
 
+
     /*=========== Escrevendo no arquivo com bitmap (codificando) =========================*/
 
     // abrindo o arquivo de entrada de novo pra ler o texto
@@ -75,8 +76,7 @@ int main(int argc, unsigned char**argv) {
 
     // escrevendo a altura da tabela no arquiv compactado
     fwrite(&altura, sizeof(int), 1, saida);
-    // escrevendo a tabela no arquivo compactado
-    fwrite(tabCode, sizeof(unsigned char*), 1, saida); 
+
 
     // criando o bitmap
     bitmap* bm = bitmapInit(MAX_SIZE);

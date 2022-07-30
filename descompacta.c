@@ -3,6 +3,8 @@
 #include <string.h>
 
 #include "./headers/Lista_arv.h"
+#include "./headers/bitmap.h"
+
 
 int main(int argc, char **argv) {
     // //variaveis uteis    
@@ -35,14 +37,12 @@ int main(int argc, char **argv) {
     // lendo a altura da tabela no arquivo compactado
     int altura = 0;
     fread(&altura, sizeof(int), 1, entrada);
-    printf("altura: %d\n", altura);
+    printf("altura descompactada: %d\n", altura);
 
-    // lendo a tabela de codificação
 
 
 
     fclose(entrada);
-
 
 
     // free(v);

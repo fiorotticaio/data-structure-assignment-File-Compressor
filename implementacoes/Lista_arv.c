@@ -45,11 +45,11 @@ void ImprimeLista(Lista* lista) {
     if (lista->Prim == NULL) return;
 
     Celula* p;
-    for (p = lista->Prim; p != NULL; p = p->prox) abb_imprime(p->arvore); printf("\n");
+    // for (p = lista->Prim; p != NULL; p = p->prox) abb_imprime(p->arvore); printf("\n");
 
     //impressao no formato graphviz
     printf("digraph G {\n\n");
-    // for (p = lista->Prim; p != NULL; p = p->prox) abb_imprime_formato_graphviz(p->arvore); printf("\n");
+    for (p = lista->Prim; p != NULL; p = p->prox) abb_imprime_formato_graphviz(p->arvore); printf("\n");
     printf("}\n\n");
 }
 
