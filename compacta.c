@@ -61,7 +61,6 @@ int main(int argc, unsigned char**argv) {
     unsigned char** tabCode = alocaTabela(altura+1);
     geraTabCode(tabCode, getPrimeiroNo(listaArvores), "", altura+1);
     imprimeTabCode(tabCode);
-    liberaTabCode(tabCode);
 
 
     /*=========== Escrevendo no arquivo com bitmap (codificando) =========================*/
@@ -73,6 +72,12 @@ int main(int argc, unsigned char**argv) {
     path[qtdLetras-4] = '\0'; // tirar o .txt do path
     FILE* saida = fopen(strcat(path, ".comp"), "w");
 
+
+    // escrevendo a altura da tabela no arquiv compactado
+    fwrite(&altura, sizeof(int), 1, saida);
+    // escrevendo a tabela no arquivo compactado
+    fwrite(tabCode, sizeof(unsigned char*), 1, saida); 
+
     // criando o bitmap
     bitmap* bm = bitmapInit(MAX_SIZE);
     int total_gravado = 0, qtdBytes = 0;
@@ -82,23 +87,14 @@ int main(int argc, unsigned char**argv) {
         fscanf(entrada, "%c", &caractere);
         // codifica(tabCode, bm, caractere); // não sei o porquê não funciona
         // preenche_bitmap(getPrimeiroNo(listaArvores), caractere, bm); // antiga
-        // total_gravado = fwrite(bm, sizeof(bitmap*), 8, saida); // isso ta errado
+        // fwrite();
         qtdBytes++;
     }
-
-    i = 0;
-	for (i = 0; i < bitmapGetLength(bm); i++) {
-		printf("bit #%d = %0x\n", i, bitmapGetBit(bm, i));
-	}
-
-    printf("\n");
-    printf("bm length: %d\n", bitmapGetLength(bm));
-    printf("qtdBytes: %d\n", qtdBytes);
-    printf("total gravado: %d\n", total_gravado);
 
     fclose(entrada);
     fclose(saida);
 
+    liberaTabCode(tabCode);
     bitmapLibera(bm);
     LiberaLista(listaArvores);
     free(v);

@@ -33,7 +33,7 @@ https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/
 
     [x] Usar Graphviz online para fazer os diagramas das árvores
     
-    [ ] TROCAR TODOS OS char PARA unsigned char
+    [X] TROCAR TODOS OS char PARA unsigned char
 
     [ ] Verificar documentação dos cabeçalhos (.h)
 
@@ -42,3 +42,4 @@ https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/
 
     [ ] Descobrir como serielizar a árvore
     	- Um long int defininfo o tamanho da árvore, seguido da serielização de 0 para nós internos e 1 para nós folha seguidos dos o bits do caractere
+        - A tabela de codificação direto

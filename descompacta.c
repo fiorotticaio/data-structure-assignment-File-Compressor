@@ -7,7 +7,7 @@
 int main(int argc, char **argv) {
     // //variaveis uteis    
     // int i=0;
-    // char path[100];
+    char path[100];
     // char palavra[100];
     // long int *v = malloc(sizeof(long int) * 256);
 
@@ -15,9 +15,9 @@ int main(int argc, char **argv) {
     // //limpando vetor de pesos
     // for(i=0;i<256;i++) v[i] = 0;
 
-    // //caminho do arquivo passado na execucao do programa
-    // sprintf(path, "%s", argv[1]);
-    // FILE * arquivo = fopen(path, "r");
+    //caminho do arquivo passado na execucao do programa
+    sprintf(path, "%s", argv[1]);
+    FILE * entrada = fopen(path, "r");
 
     // //lendo o arquivo de texto e anotando os pesos no vetor
     // while(!feof(arquivo)){
@@ -32,7 +32,16 @@ int main(int argc, char **argv) {
     // for(i=0;i<256;i++) if (v[i]>0) printf("%c - %ld\n", (char)i, v[i]);
 
     
+    // lendo a altura da tabela no arquivo compactado
+    int altura = 0;
+    fread(&altura, sizeof(int), 1, entrada);
+    printf("altura: %d\n", altura);
 
+    // lendo a tabela de codificação
+
+
+
+    fclose(entrada);
 
 
 

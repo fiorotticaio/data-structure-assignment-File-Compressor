@@ -1,9 +1,10 @@
-prog: clear compacta 
+prog: clear compacta descompacta
 	@ ./compacta teste.txt
-#	@ ./descompacta teste.comp
+	@ ./descompacta teste.comp
 
-valgrind: clear compacta
+valgrind: clear compacta descompacta
 	@ valgrind ./compacta teste.txt
+	@ valgrind ./descompacta teste.comp
 
 Arvore_bin:
 	@ gcc -c ./implementacoes/Arvore_bin.c -lm
