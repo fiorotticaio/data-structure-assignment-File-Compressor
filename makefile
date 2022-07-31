@@ -1,8 +1,16 @@
+all: prog verificador
+
 prog: clear compacta descompacta
 	@ ./compacta teste.txt
 	@ ./descompacta teste.comp
-	@ echo "\nTamaho dos arquivos"
+
+verificador: prog
+	@ echo "\033[1;36m\n\n[verificador] \033[mTamanho dos arquivos:"
 	@ du -h teste.comp && du -h teste.txt
+
+	@ echo "\033[1;36m\n[verificador] \033[mDiff entre os arquivos:"
+	@ diff teste.txt teste_saida.txt
+	@ echo "---\n"
 
 valgrind: clear compacta descompacta
 	@ valgrind ./compacta teste.txt

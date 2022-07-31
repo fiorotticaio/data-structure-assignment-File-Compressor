@@ -4,8 +4,6 @@
 
 #include "../headers/Arvore_bin.h"
 
-#define MAX_SIZE 1000000 // teste com 1 MEGA bytes
-
 struct arv {
     unsigned char info;
     long int peso;
@@ -18,11 +16,8 @@ Arv* abb_cria_vazia(void) {
     return NULL;
 }
 
-Arv* abb_cria(int ehFolha, unsigned char caracter, long int peso, Arv* e, Arv* d) {
+Arv* abb_cria(unsigned char caracter, long int peso, Arv* e, Arv* d) {
     Arv* p = (Arv*) malloc(sizeof(Arv));
-    
-    // if (ehFolha) p->info = caracter;
-    // else p->info = NULL;
     
     p->info = caracter;
     p->codigo = strdup("");
@@ -44,14 +39,18 @@ void abb_imprime(Arv* a) {
 }
 
 void abb_imprime_formato_graphviz(Arv * a) {
-    if (a == NULL) printf("-");
+    if (a == NULL) printf("-");   
     else if (a->esq!=NULL && a->dir!=NULL) {
-        printf("%ld -> ", a->peso);
+        printf("%d.%ld -> ", a->info, a->peso);
         abb_imprime_formato_graphviz(a->esq);
-        printf("%ld -> ", a->peso);
+        printf("%d.%ld -> ", a->info, a->peso);
         abb_imprime_formato_graphviz(a->dir);
-    } else if (a->info!=' ') printf("%c%ld\n", a->info, a->peso);
-    else printf("esp%ld\n", a->peso);
+    } else {
+        // if (a->info==' ') printf("esp%ld\n", a->peso);
+        // else if (a->info=='\n') printf("br%ld\n", a->peso);
+        // else printf("%c%ld\n", a->info, a->peso);
+        printf("%d.%ld\n", a->info, a->peso);
+    }
 }
 
 void preenche_bitmap(Arv* a, unsigned char caractere, bitmap* bm) {
@@ -98,6 +97,24 @@ Arv* abb_insere(Arv* a, unsigned char caracter, long int peso) {
     }
 
     return a;
+}
+
+void abb_preenche_codigos(Arv* a, unsigned char * codigo, int indice, char letra){
+    //caso seja o ultimo bit do codigo
+    if (indice == strlen(codigo)) {
+        a->info=letra;
+
+    //caso seja o bit 1 (criar um ramo na direita)
+    } else if (codigo[indice]=='1') {
+        if (a->dir==NULL) a->dir = abb_cria('-', indice+((int)letra), abb_cria_vazia(), abb_cria_vazia());
+        abb_preenche_codigos(a->dir, codigo, indice+1, letra);
+    
+    //caso seja o bit 0 (criar um ramo na esquerda)
+    } else if (codigo[indice]=='0'){
+        if (a->esq==NULL) a->esq = abb_cria('-', indice+((int)letra), abb_cria_vazia(), abb_cria_vazia());
+        abb_preenche_codigos(a->esq, codigo, indice+1, letra);
+    }
+
 }
 
 Arv* abb_retira(Arv* a, unsigned char caracter, long int peso) {
@@ -227,8 +244,8 @@ void geraTabCode(unsigned char** tabela, Arv* a, char* caminho, int colunas) {
     if (a->esq == NULL && a->dir == NULL) {
         strcpy(tabela[a->info], caminho);
 
+    // gerando caminhos para subárvores
     } else {
-        // gerando caminhos para subárvores
         strcpy(esq, caminho);
         strcpy(dir, caminho);
         strcat(esq, "0");
@@ -267,27 +284,35 @@ void codifica(unsigned char** tabela, bitmap* bm, unsigned char caractere) {
     
 }
 
-void decodifica(unsigned char** tabela, bitmap* bm) {
-    // //LOOP PARA DESCODIFICAR
-    // Arv * prim = getPrimeiroNo(listaArvores);
-    // Arv* aux=prim;
-    // int k;
-    // for (k=0;k<bitmapGetLength(bm);k++) {
-    //     // printf("bit: %d(%0x)\n", k, bitmapGetBit(bm, k));
+void decodifica(Arv * a, bitmap* bm, FILE * saida) {
+    int k;
+    Arv* aux=a;
 
-    //     //caso o bit seja 1, ramo da direita
-    //     if ((int)bitmapGetBit(bm, k)) aux = getRamoDir(aux);
-    //     //caso o bit seja 0, ramo da esquerda
-    //     else aux = getRamoEsq(aux);
-
-    //     //caso o no seja folha
-    //     if (abb_vazia(getRamoDir(aux)) && abb_vazia(getRamoEsq(aux))){
-    //         // printf("\n[%c]\n", getChar(aux));
-    //         printf("%c", getChar(aux));
-    //         aux = prim;
-    //     }        
+    //passando por cada bit no bitmap
+    for (k=0;k<bitmapGetLength(bm)-1;k++) {
         
+        //caso o bit seja 1, ramo da direita da arvore
+        if ((int)bitmapGetBit(bm, k)) aux = getRamoDir(aux);
+        
+        //caso o bit seja 0, ramo da esquerda da arvore
+        else aux = getRamoEsq(aux);
+        
+        //caso o nó seja um nó folha
+        if (abb_vazia(getRamoDir(aux)) && abb_vazia(getRamoEsq(aux))){
+            fprintf(saida, "%c", getChar(aux));
+            aux = a;
+        }        
+    }
+
+
+    //TODO: retirar
+    // int k;
+    // printf("\n(decodifica) imprimindo bitmap\n");
+    // for(k=0;k<bitmapGetLength(bm);k++) {
+    //     printf("%d", bitmapGetBit(bm, k));
     // }
+
+    
     
 }
 
