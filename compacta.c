@@ -40,23 +40,23 @@ int main(int argc, unsigned char**argv) {
         }
     }
 
-    ImprimeLista(listaArvores);
+    // ImprimeLista(listaArvores);
     
     OrdenaLista(listaArvores);
 
-    ImprimeLista(listaArvores);
+    // ImprimeLista(listaArvores);
 
     Aplica_Huffman(listaArvores);
 
     // CodificaNos(listaArvores); acho que não vai precisar mais
     // era fonte de um monte daqueles ERROS
 
-    ImprimeLista(listaArvores);
+    // ImprimeLista(listaArvores);
 
 
 
 
-    /*====== montando a tabela de codificação ===========*/
+    /*====== Montando a tabela de codificação ===========*/
     int altura = calculaAlturaArvore_Huff(listaArvores);
     unsigned char** tabCode = alocaTabela(altura+1);
     geraTabCode(tabCode, getPrimeiroNo(listaArvores), "", altura+1);
@@ -65,7 +65,6 @@ int main(int argc, unsigned char**argv) {
 
 
     /*=========== Escrevendo no arquivo com bitmap (codificando) =========================*/
-
     // abrindo o arquivo de entrada de novo pra ler o texto
     FILE * entrada = fopen(path, "r");
     //gerando o arquivo de saida
@@ -75,7 +74,14 @@ int main(int argc, unsigned char**argv) {
 
 
     // escrevendo a altura da tabela no arquiv compactado
+    //TODO: retirar comentario
+    // printf("Escrevedo altura (%d) no arquivo de saida\n", altura); 
     fwrite(&altura, sizeof(int), 1, saida);
+
+    //escrevendo a tabela de codificação no arquivo compactado
+    fwrite(tabCode, sizeof(unsigned char**), 1, saida);
+
+    printf("(compacta) b: [%s]\n", tabCode['b']);
 
 
     // criando o bitmap
@@ -83,13 +89,17 @@ int main(int argc, unsigned char**argv) {
     int total_gravado = 0, qtdBytes = 0;
 
     // loop pra preencher o bitmap
-    while(!feof(entrada)){
+    while(!feof(entrada)){ //FIXME: esse loop passa pela ultima letra duas vezes (arrumar dps)
         fscanf(entrada, "%c", &caractere);
-        // codifica(tabCode, bm, caractere); // não sei o porquê não funciona
+        codifica(tabCode, bm, caractere); 
+        
+        // descodifica(tabCode,bm);
+
         // preenche_bitmap(getPrimeiroNo(listaArvores), caractere, bm); // antiga
-        // fwrite();
+        fwrite(bitmapGetContents(bm), sizeof(char), bitmapGetLength(bm), saida);
         qtdBytes++;
     }
+
 
     fclose(entrada);
     fclose(saida);

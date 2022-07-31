@@ -4,6 +4,8 @@
 
 #include "../headers/Arvore_bin.h"
 
+#define MAX_SIZE 1000000 // teste com 1 MEGA bytes
+
 struct arv {
     unsigned char info;
     long int peso;
@@ -92,7 +94,7 @@ Arv* abb_insere(Arv* a, unsigned char caracter, long int peso) {
         a->dir = abb_insere(a->dir, caracter, peso);
 
     } else if (caracter == a->info) { 
-        printf("Caracter '%c' jah existe na arvore\n", caracter);
+        printf("Caracter '%c' já existe na arvore\n", caracter);
     }
 
     return a;
@@ -251,17 +253,44 @@ void liberaTabCode(unsigned char** tabela) {
 }
 
 void codifica(unsigned char** tabela, bitmap* bm, unsigned char caractere) {
-    /* não sei o porquê não funciona */
     int i = 0;
     while(tabela[caractere][i] != '\0') {
         if (tabela[caractere][i] == '0') {
+            // printf("inserindo 0 da posicao %d de [%s]\n", i, tabela[caractere]);
             bitmapAppendLeastSignificantBit(bm, 0);
         } else {
             bitmapAppendLeastSignificantBit(bm, 1);
+            // printf("inserindo 1 da posicao %d de [%s]\n", i, tabela[caractere]);
         }
         i++;
     }
+    
 }
+
+void decodifica(unsigned char** tabela, bitmap* bm) {
+    // //LOOP PARA DESCODIFICAR
+    // Arv * prim = getPrimeiroNo(listaArvores);
+    // Arv* aux=prim;
+    // int k;
+    // for (k=0;k<bitmapGetLength(bm);k++) {
+    //     // printf("bit: %d(%0x)\n", k, bitmapGetBit(bm, k));
+
+    //     //caso o bit seja 1, ramo da direita
+    //     if ((int)bitmapGetBit(bm, k)) aux = getRamoDir(aux);
+    //     //caso o bit seja 0, ramo da esquerda
+    //     else aux = getRamoEsq(aux);
+
+    //     //caso o no seja folha
+    //     if (abb_vazia(getRamoDir(aux)) && abb_vazia(getRamoEsq(aux))){
+    //         // printf("\n[%c]\n", getChar(aux));
+    //         printf("%c", getChar(aux));
+    //         aux = prim;
+    //     }        
+        
+    // }
+    
+}
+
 
 
 

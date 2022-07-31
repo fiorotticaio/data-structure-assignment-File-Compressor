@@ -5,6 +5,7 @@
 #include "./headers/Lista_arv.h"
 #include "./headers/bitmap.h"
 
+#define MAX_SIZE 1000000 // teste com 1 MEGA bytes
 
 int main(int argc, char **argv) {
     // //variaveis uteis    
@@ -37,7 +38,14 @@ int main(int argc, char **argv) {
     // lendo a altura da tabela no arquivo compactado
     int altura = 0;
     fread(&altura, sizeof(int), 1, entrada);
-    printf("altura descompactada: %d\n", altura);
+    // printf("altura descompactada: %d\n", altura);
+
+    unsigned char** tabCode = alocaTabela(altura+1);
+    fread(tabCode, sizeof(unsigned char**), 1, entrada);
+
+    printf("(descompacta) b: [%s]\n", tabCode['b']);
+
+
 
 
 

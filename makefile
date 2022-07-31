@@ -1,6 +1,8 @@
 prog: clear compacta descompacta
 	@ ./compacta teste.txt
 	@ ./descompacta teste.comp
+	@ echo "\nTamaho dos arquivos"
+	@ du -h teste.comp && du -h teste.txt
 
 valgrind: clear compacta descompacta
 	@ valgrind ./compacta teste.txt

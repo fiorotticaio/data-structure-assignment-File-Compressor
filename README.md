@@ -36,6 +36,8 @@ https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/
     [X] TROCAR TODOS OS char PARA unsigned char
 
     [ ] Verificar documentação dos cabeçalhos (.h)
+        [ ] Padronizar cabeçalhos e nome das funções do arquivo da arvore 
+        para que todos começem com `abb_`
 
     [ ] Descobrir como usar o bitmap
         (escrever arquivos .comp)

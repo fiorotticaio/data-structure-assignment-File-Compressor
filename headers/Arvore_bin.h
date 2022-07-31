@@ -181,4 +181,6 @@ void liberaTabCode(unsigned char** tabela);
 
 void codifica(unsigned char** tabela, bitmap* bm, unsigned char caractere);
 
+void decodifica(unsigned char** tabela, bitmap* bm);
+
 #endif // ARVORE_BIN
