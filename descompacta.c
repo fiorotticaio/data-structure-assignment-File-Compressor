@@ -9,20 +9,20 @@
 #define MAX_SIZE 3567587328 // Limite de 3 GIGA bytes
 
 int main(int argc, char **argv) {
+    int i, altura = 0, k;
     char path[100];
 
     // Caminho do arquivo passado na execucao do programa
     sprintf(path, "%s", argv[1]);
     FILE * entrada = fopen(path, "r");
-    // printf("altura descompactada: %d\n", altura);
 
 
 
 
     /*================ Tabela de codificação do arquivo compactado ================*/
     
-    int altura = 0, k;
     fread(&altura, sizeof(int), 1, entrada);
+    // printf("altura descompactada: %d\n", altura);
 
     unsigned char** tabCode = alocaTabela(altura+1);
     for(k=0;k<256;k++) fread(tabCode[k], sizeof(unsigned char*), 1, entrada);
@@ -31,11 +31,10 @@ int main(int argc, char **argv) {
 
 
 
-
     /* ================= Criando arvore pela tabela de codificação ================= */
+    
     Arv * arv_huffman=abb_cria('-', 0, abb_cria_vazia(), abb_cria_vazia());
     
-
     for(k=0;k<256;k++){
         if (strlen(tabCode[k])>0){
             char * codigo = strdup(tabCode[k]);
@@ -44,7 +43,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    //TODO: retirar
+    //TODO: retirar 
     // abb_imprime_formato_graphviz(arv_huffman);
 
 
@@ -52,17 +51,7 @@ int main(int argc, char **argv) {
 
     /*===================== Conteudo do texto no arquivo compactado =====================*/
     
-    
-    // char tamanho_binario[100];
-    // long int tamanho_decimal;
-    // fread(tamanho_binario, sizeof(char*), 1, entrada);
-    // int i;
-    
-    // for(i=0;i<strlen(tamanho_binario);i++) if (tamanho_binario[i] == '1') tamanho_decimal += pow(2,strlen(tamanho_binario)-i);
-    
-    // printf("tamanho_binario(desco): %s\n", tamanho_binario);
-    // printf("tamanho_decimal(desco): %ld\n", tamanho_decimal);
-    
+
     bitmap* bm = bitmapInit(MAX_SIZE);
     while(!feof(entrada)){
         unsigned char aux;
@@ -70,10 +59,13 @@ int main(int argc, char **argv) {
         bitmapAppendLeastSignificantBit(bm, aux);
     }
 
-    // unsigned char * aux;
-    // fread(aux, sizeof(unsigned char*), tamanho_decimal, entrada);
-
-    // for(i=0;i<tamanho_decimal;i++) bitmapAppendLeastSignificantBit(bm, aux[i]);
+    
+    //FIXME: isso nao funciona
+    // long int tamanho;
+    // fread(&tamanho, sizeof(long int), 1, entrada);
+    // unsigned char * aux = malloc(sizeof(unsigned char) * tamanho);
+    // fread(aux, sizeof(unsigned char), tamanho, entrada);
+    // for(i=0;i<tamanho;i++) bitmapAppendLeastSignificantBit(bm, aux[i]=='1'?1:0);
 
 
 
@@ -81,16 +73,16 @@ int main(int argc, char **argv) {
     /* ============================== Escrevendo na saida ============================== */
 
     
-    char saidaPath[100];
-    sprintf(saidaPath, "%s", path);
-    saidaPath[strlen(saidaPath)-5] = '\0';
-    strcat(saidaPath, "_saida.txt");
+    path[strlen(path)-5] = '\0';
+    //TODO: mudar o nome depois
+    strcat(path, "_saida.txt");
 
-    FILE * saida = fopen(saidaPath, "wr");
+    FILE * saida = fopen(path, "wr");
     decodifica(arv_huffman, bm, saida);
 
 
     /* ======================== Liberando a memória ======================== */
+    // free(aux);
     fclose(entrada);
     fclose(saida);
     liberaTabCode(tabCode);

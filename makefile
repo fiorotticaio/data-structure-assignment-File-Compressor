@@ -1,15 +1,20 @@
-all: prog verificador
+name = teste
+
+all: prog warning verificador 
 
 prog: clear compacta descompacta
-	@ ./compacta teste.txt
-	@ ./descompacta teste.comp
+	@ ./compacta $(name).txt
+	@ ./descompacta $(name).comp
+
+warning:
+	@ echo "\033[1;93m\n[warning] \033[mTamanho máximo permitido: 3.5 gb (long int)"
 
 verificador: prog
-	@ echo "\033[1;36m\n\n[verificador] \033[mTamanho dos arquivos:"
-	@ du -h teste.comp && du -h teste.txt
+	@ echo "\033[1;36m\n[verificador] \033[mTamanho dos arquivos:"
+	@ du -h $(name).comp && du -h $(name).txt
 
 	@ echo "\033[1;36m\n[verificador] \033[mDiff entre os arquivos:"
-	@ diff teste.txt teste_saida.txt
+	@ diff $(name).txt $(name)_saida.txt
 	@ echo "---\n"
 
 valgrind: clear compacta descompacta
@@ -38,5 +43,4 @@ descompacta: Arvore_bin Lista_arv
 
 clear:
 	@ rm -f *.o compacta descompacta
-#	@ rm -f saidas/*.txt
-	@ echo "\033[1;32m[makefile] \033[mDiretório Limpo! ✅"
+	@ echo "\033[1;34m[limpador] \033[mDiretório Limpo! ✅\n"
