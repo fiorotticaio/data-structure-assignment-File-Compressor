@@ -103,7 +103,7 @@ long int getPeso(Arv * a);
  * pré-condição: ponteiro para árvore existe
  * pós-condição: arvore não é alterada
  */
-unsigned char getChar(Arv * a);
+unsigned char getInfo(Arv * a);
 
 /** Retorna o ponteiro para o ramo esquerdo da arvore
  * input: ponteiro para arvore

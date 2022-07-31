@@ -74,22 +74,30 @@ int main(int argc, unsigned char**argv) {
     FILE* saida = fopen(strcat(path, ".comp"), "w");
 
 
-    // escrevendo a altura da tabela no arquiv compactado
+    // escrevendo a altura da tabela no arquivo compactado (teste)
     fwrite(&altura, sizeof(int), 1, saida);
 
 
     // criando o bitmap
     bitmap* bm = bitmapInit(MAX_SIZE);
-    int total_gravado = 0, qtdBytes = 0;
+    int qtdBytes = 0;
 
     // loop pra preencher o bitmap
     while(!feof(entrada)){
         fscanf(entrada, "%c", &caractere);
-        // codifica(tabCode, bm, caractere); // não sei o porquê não funciona
-        // preenche_bitmap(getPrimeiroNo(listaArvores), caractere, bm); // antiga
-        // fwrite();
+        codifica(tabCode, bm, caractere); 
         qtdBytes++;
     }
+
+    // escrevendo o bitmap no arquivo compactado
+    i = 0;
+    while (i < qtdBytes) {
+        // não tenho certeza se ta imprimindo certo, tem que descompactar pra ver 
+        fwrite(&(bitmapGetContents(bm)[i]), sizeof(unsigned char), 1, saida);
+        i++;
+    }
+
+    
 
     fclose(entrada);
     fclose(saida);

@@ -7,7 +7,6 @@
 struct arv {
     unsigned char info;
     long int peso;
-    unsigned char* codigo;
     struct arv *esq;
     struct arv *dir;
 };
@@ -23,7 +22,6 @@ Arv* abb_cria(int ehFolha, unsigned char caracter, long int peso, Arv* e, Arv* d
     // else p->info = NULL;
     
     p->info = caracter;
-    p->codigo = strdup("");
     p->peso = peso;
     p->esq = e;
     p->dir = d;
@@ -33,7 +31,7 @@ Arv* abb_cria(int ehFolha, unsigned char caracter, long int peso, Arv* e, Arv* d
 void abb_imprime(Arv* a) {
     printf("<");
     if (a != NULL) {
-        if (a->info != '-') printf("[%c - %ld - %s]", a->info, a->peso, a->codigo);
+        if (a->info != '-') printf("[%c - %ld]", a->info, a->peso);
         else printf("[%ld]", a->peso);
         abb_imprime(a->esq);
         abb_imprime(a->dir);
@@ -53,24 +51,23 @@ void abb_imprime_formato_graphviz(Arv * a) {
 }
 
 void preenche_bitmap(Arv* a, unsigned char caractere, bitmap* bm) {
-    int i = 0;
+//     int i = 0;
 
-    if (a == NULL) return;
-    else if (getChar(a) == caractere) {
-        while(a->codigo[i]) {
-            bitmapAppendLeastSignificantBit(bm, a->codigo[i]);
-            // print 1
-            // print a->codido
-            i++;
-        }
+//     if (a == NULL) return;
+//     else if (getInfo(a) == caractere) {
+//         while(a->codigo[i]) {
+//             bitmapAppendLeastSignificantBit(bm, a->codigo[i]);
+//             // print 1
+//             // print a->codido
+//             i++;
+//         }
 
-    } else {
-        preenche_bitmap(a->esq, caractere, bm);
-        // print 0
-        preenche_bitmap(a->dir, caractere, bm);
-        // print 0
-    }
-
+//     } else {
+//         preenche_bitmap(a->esq, caractere, bm);
+//         // print 0
+//         preenche_bitmap(a->dir, caractere, bm);
+//         // print 0
+//     }
 }
 
 Arv* abb_insere(Arv* a, unsigned char caracter, long int peso) {
@@ -147,20 +144,20 @@ Arv* abb_libera(Arv* a) {
     if (a != NULL) {
         abb_libera(a->esq);
         abb_libera(a->dir);
-        free(a->codigo);
+        // free(a->codigo);
         free(a);
     }
     return NULL;
 }
 
 void setCodigo(Arv* a, unsigned char* codigo) {
-    a->codigo = realloc(a->codigo, strlen(codigo));
-    strcpy(a->codigo, codigo);
+//     a->codigo = realloc(a->codigo, strlen(codigo));
+//     strcpy(a->codigo, codigo);
 }
 
 long int getPeso(Arv * a) { return a->peso; }
 
-unsigned char getChar(Arv * a) { return a->info; }
+unsigned char getInfo(Arv * a) { return a->info; }
 
 Arv * getRamoEsq(Arv * a) { return a->esq; }
 
@@ -176,36 +173,36 @@ int abb_altura(Arv* a) {
 }
 
 void abb_codifica_nos(Arv* a, unsigned char* codigo) {
-    if (a->esq == NULL && a->dir == NULL) { // no folha
-        setCodigo(a, codigo);
+//     if (a->esq == NULL && a->dir == NULL) { // no folha
+//         setCodigo(a, codigo);
 
-    } else if (a->esq == NULL && a->dir != NULL) { // vai pra direita
-        a->dir->codigo = realloc(a->dir->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
-        strcat(codigo, "1");
-        abb_codifica_nos(a->dir, codigo);
+//     } else if (a->esq == NULL && a->dir != NULL) { // vai pra direita
+//         a->dir->codigo = realloc(a->dir->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
+//         codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
+//         strcat(codigo, "1");
+//         abb_codifica_nos(a->dir, codigo);
 
-    } else if (a->esq != NULL && a->dir == NULL) { // vai pra esquerda
-        a->esq->codigo = realloc(a->esq->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
-        strcat(codigo, "0");
-        abb_codifica_nos(a->esq, codigo);
+//     } else if (a->esq != NULL && a->dir == NULL) { // vai pra esquerda
+//         a->esq->codigo = realloc(a->esq->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
+//         codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
+//         strcat(codigo, "0");
+//         abb_codifica_nos(a->esq, codigo);
 
-    } else {
-        unsigned char* aux = strdup(codigo);
+//     } else {
+//         unsigned char* aux = strdup(codigo);
 
-        a->esq->codigo = realloc(a->esq->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
-        strcat(codigo, "0");
-        abb_codifica_nos(a->esq, codigo);
+//         a->esq->codigo = realloc(a->esq->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
+//         codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
+//         strcat(codigo, "0");
+//         abb_codifica_nos(a->esq, codigo);
 
-        a->dir->codigo = realloc(a->dir->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
-        strcat(aux, "1");
-        abb_codifica_nos(a->dir, aux);
+//         a->dir->codigo = realloc(a->dir->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
+//         codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
+//         strcat(aux, "1");
+//         abb_codifica_nos(a->dir, aux);
 
-        free(aux);
-    }
+//         free(aux);
+//     }
 }
 
 unsigned char** alocaTabela(int colunas) {
@@ -239,7 +236,8 @@ void geraTabCode(unsigned char** tabela, Arv* a, char* caminho, int colunas) {
 void imprimeTabCode(unsigned char** tabela) {
     int i = 0;
     for (i = 0; i < 256; i++) {
-        if (strlen(tabela[i]) > 0) printf("%d - %c: %s\n", i, i, tabela[i]); // imprimir os que não são zero
+        if (strlen(tabela[i]) > 0) 
+            printf("%d - %c: %s\n", i, i, tabela[i]); 
     }
 }
 
@@ -251,7 +249,6 @@ void liberaTabCode(unsigned char** tabela) {
 }
 
 void codifica(unsigned char** tabela, bitmap* bm, unsigned char caractere) {
-    /* não sei o porquê não funciona */
     int i = 0;
     while(tabela[caractere][i] != '\0') {
         if (tabela[caractere][i] == '0') {
