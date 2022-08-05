@@ -31,6 +31,7 @@ int main(int argc, unsigned char**argv) {
     while(!feof(arquivo)){
         if (caractere!='\0') v[caractere]+=1;
         fscanf(arquivo, "%c", &caractere);
+        // fread(&caractere, sizeof(unsigned char), 1, arquivo);
     }
     fclose(arquivo);
 
@@ -112,6 +113,7 @@ int main(int argc, unsigned char**argv) {
     int tam_codificado=0, tam_nao_codificado=0;
     while(!feof(entrada)) {
         fscanf(entrada, "%c", &caractere);
+        // fread(&caractere, sizeof(unsigned char), 1, arquivo);
         tam_nao_codificado++;
     }
     
@@ -119,6 +121,7 @@ int main(int argc, unsigned char**argv) {
 
     for(i=0;i<tam_nao_codificado-1;i++){ 
         fscanf(entrada, "%c", &caractere);
+        // fread(&caractere, sizeof(unsigned char), 1, arquivo);
         tam_codificado += strlen(tabCode[caractere]);
     }
 
@@ -136,13 +139,14 @@ int main(int argc, unsigned char**argv) {
     
     for(i=0;i<tam_nao_codificado-1;i++){
         fscanf(entrada, "%c", &caractere);
+        // fread(&caractere, sizeof(unsigned char), 1, arquivo);
         strcat(texto_codificado, tabCode[caractere]);
     }
 
     // printf("%s\n", texto_codificado);
     // imprimeTabCode(tabCode);
 
-    unsigned char byte, aux;
+    unsigned char byte=0, aux=0;
 
     i=0;
     int j=7;
