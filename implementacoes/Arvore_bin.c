@@ -41,15 +41,18 @@ void abb_imprime(Arv* a) {
 void abb_imprime_formato_graphviz(Arv * a) {
     if (a == NULL) printf("-");   
     else if (a->esq!=NULL && a->dir!=NULL) {
-        printf("%d.%ld -> ", a->info, a->peso);
+        // printf("%d.%ld -> ", a->info, a->peso);
+        printf("%ld -> ", a->peso);
         abb_imprime_formato_graphviz(a->esq);
-        printf("%d.%ld -> ", a->info, a->peso);
+        // printf("%d.%ld -> ", a->info, a->peso);
+        printf("%ld -> ", a->peso);
         abb_imprime_formato_graphviz(a->dir);
     } else {
         // if (a->info==' ') printf("esp%ld\n", a->peso);
         // else if (a->info=='\n') printf("br%ld\n", a->peso);
         // else printf("%c%ld\n", a->info, a->peso);
-        printf("%d.%ld\n", a->info, a->peso);
+        // printf("%d.%ld\n", a->info, a->peso);
+        printf("%c.%ld\n", a->info, a->peso);
     }
 }
 
