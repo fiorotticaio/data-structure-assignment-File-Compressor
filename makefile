@@ -1,9 +1,10 @@
 name = teste
+file = txt
 
 all: prog warning verificador 
 
 prog: clear compacta descompacta
-	@ ./compacta $(name).txt
+	@ ./compacta $(name).$(file)
 	@ ./descompacta $(name).comp
 
 warning:
@@ -11,14 +12,14 @@ warning:
 
 verificador: prog
 	@ echo "\033[1;36m\n[verificador] \033[mTamanho dos arquivos:"
-	@ du -h $(name).comp && du -h $(name).txt && du -h $(name)_saida.txt
+	@ du -h $(name).comp && du -h $(name).$(file) && du -h $(name)_saida.$(file)
 
 	@ echo "\033[1;36m\n[verificador] \033[mDiff entre os arquivos:"
-	@ -diff $(name).txt $(name)_saida.txt
+	@ -diff $(name).$(file) $(name)_saida.$(file)
 	@ echo "---\n"
 
 val: clear compacta descompacta
-	@ valgrind ./compacta teste.txt
+	@ valgrind ./compacta teste.$(file)
 	@ valgrind ./descompacta teste.comp
 
 Arvore_bin:
