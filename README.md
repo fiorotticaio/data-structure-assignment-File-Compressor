@@ -35,13 +35,17 @@ https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/
     
     [X] TROCAR TODOS OS char PARA unsigned char
 
-    [ ] Verificar documentação dos cabeçalhos (.h)
+    [X] Verificar documentação dos cabeçalhos (.h)
         [ ] Padronizar cabeçalhos e nome das funções do arquivo da arvore 
         para que todos começem com `abb_`
 
-    [ ] Descobrir como usar o bitmap
+    [X] Descobrir como usar o bitmap
         (escrever arquivos .comp)
 
-    [ ] Descobrir como serielizar a árvore
+    [X] Descobrir como serielizar a árvore
     	- Um long int defininfo o tamanho da árvore, seguido da serielização de 0 para nós internos e 1 para nós folha seguidos dos o bits do caractere
         - A tabela de codificação direto
+
+    [ ] Consertar o erro do strcat no descompacta
+
+    [ ] Fazer funcionar direto pra qualquer arquivo
