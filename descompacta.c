@@ -16,7 +16,7 @@ unsigned int bit(unsigned char byte, int pos){
 
 
 int main(int argc, char **argv) {
-    int i, altura = 0, k;
+    int i = 0, j = 0, altura = 0, k = 0;
     long int *v = malloc(sizeof(long int) * 256);
     char path[100];
 
@@ -66,7 +66,13 @@ int main(int argc, char **argv) {
     Arv * raiz = getPrimeiroNo(listaArvores);
     Arv * aux = raiz;
 
+    // bitmap* bm = bitmapInit(MAX_SIZE);
+    i = 0;
+    j = 0;
+    // int qtd = fread(&byte, sizeof(unsigned char), 1, entrada);
     while (fread(&byte, sizeof(unsigned char), 1, entrada)) {
+
+
         for (int i = 7; i >= 0; i--) {
             if (bit(byte, i)) {
                 aux = getRamoDir(aux);
@@ -79,6 +85,33 @@ int main(int argc, char **argv) {
                 aux = raiz;
             }
         }
+
+        // qtd = fread(&byte, sizeof(unsigned char), 1, entrada);
+        // printf("%d\n", qtd);
+
+
+        // bitmapGetContents(bm)[i] = byte;
+        // printf("decomp bitmap length %d\n", bitmapGetLength(bm));
+        // printf("%08x\n", bitmapGetContents(bm)[i]);
+
+        // j = i*8;
+        // while (j < i*8 + 8) {
+        //     if (bitmapGetBit(bm, j) == 1) {
+        //         aux = getRamoDir(aux);
+        //     } else {
+        //         aux = getRamoEsq(aux);
+        //     }
+
+        //     if (getRamoEsq(aux) == NULL && getRamoDir(aux) == NULL) {
+        //         fprintf(saida, "%c", getChar(aux));
+        //         aux = raiz;
+        //     }
+
+        //     j++;
+        // }
+
+        // i++;
+
     }
 
 

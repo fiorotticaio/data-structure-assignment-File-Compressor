@@ -119,19 +119,19 @@ int main(int argc, unsigned char**argv) {
     
     rewind(entrada); // volta pro início do arquivo
 
-    for(i=0;i<tam_nao_codificado-1;i++){ 
-        fscanf(entrada, "%c", &caractere);
-        // fread(&caractere, sizeof(unsigned char), 1, arquivo);
-        tam_codificado += strlen(tabCode[caractere]);
-    }
+    // for(i=0;i<tam_nao_codificado-1;i++){ 
+    //     fscanf(entrada, "%c", &caractere);
+    //     // fread(&caractere, sizeof(unsigned char), 1, arquivo);
+    //     tam_codificado += strlen(tabCode[caractere]);
+    // }
 
-    //adicionando \0
-    tam_codificado++;
+    // //adicionando \0
+    // tam_codificado++;
 
 
-    unsigned char * texto_codificado = calloc(tam_codificado, sizeof(unsigned char));
+    // unsigned char * texto_codificado = calloc(tam_codificado, sizeof(unsigned char));
 
-    rewind(entrada); // volta pro início do arquivo
+    // rewind(entrada); // volta pro início do arquivo
 
     // printf("TAM COD: %d\n", tam_codificado);
     // printf("TAM NAO COD: %d\n",tam_nao_codificado);
@@ -139,7 +139,6 @@ int main(int argc, unsigned char**argv) {
     bitmap* bm = bitmapInit(MAX_SIZE);
 
     int j=0;
-
     for(i=0;i<tam_nao_codificado-1;i++){
         fscanf(entrada, "%c", &caractere);
         // fread(&caractere, sizeof(unsigned char), 1, arquivo);
@@ -151,14 +150,23 @@ int main(int argc, unsigned char**argv) {
         }
     }
 
-    printf("bitmap length: %d\n", bitmapGetLength(bm));
+    // printf("bitmap length: %d\n", bitmapGetLength(bm));
+
+    int resto = bitmapGetLength(bm)%8;
+    printf("resto: %d\n", resto);
+    printf("sizeof(unsigned char): %ld\n", sizeof(unsigned char));
+
+    if (resto != 0) {
+
+        while (resto < 8) {
+            bitmapAppendLeastSignificantBit(bm, 0);
+            resto++;
+        }
+        // fwrite(&bitmapGetContents(bm)[bitmapGetLength(bm)/8], sizeof(unsigned char), 1, saida);
+    }
 
     for (i = 0; i < bitmapGetLength(bm)/8; i++) {
         fwrite(&bitmapGetContents(bm)[i], sizeof(unsigned char), 1, saida);
-    }
-
-    if (bitmapGetLength(bm)%8 != 0) {
-        fwrite(&bitmapGetContents(bm)[bitmapGetLength(bm)/8], sizeof(unsigned char), 1, saida);
     }
 
     // printf("%s\n", texto_codificado);
@@ -196,7 +204,7 @@ int main(int argc, unsigned char**argv) {
     // codifica(tabCode, bm, caractere); 
     // fwrite(&caractere, sizeof(unsigned char), 1 ,saida);
 
-    free(texto_codificado);
+    // free(texto_codificado);
 
 
 

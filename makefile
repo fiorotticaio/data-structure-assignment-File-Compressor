@@ -1,4 +1,4 @@
-name = teste
+name = biblia
 file = txt
 
 all: prog warning verificador 
@@ -19,8 +19,8 @@ verificador: prog
 	@ echo "---\n"
 
 val: clear compacta descompacta
-	@ valgrind ./compacta teste.$(file)
-	@ valgrind ./descompacta teste.comp
+	@ valgrind ./compacta $(name).$(file)
+	@ valgrind ./descompacta $(name).comp
 
 Arvore_bin:
 	@ gcc -c ./implementacoes/Arvore_bin.c -lm
