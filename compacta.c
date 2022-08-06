@@ -70,7 +70,7 @@ int main(int argc, unsigned char**argv) {
 
     // for(i= 0; i < 256; i++) if (v[i]) printf("%d = %ld\n", i, v[i]);
 
-    fwrite(v, sizeof(long int), 256, saida);
+    fwrite(v, sizeof(long int), 256, saida); // escrevendo o vetor de frequência
 
     // escrevendo a altura da tabela no arquiv compactado
     //TODO: retirar comentario
@@ -117,7 +117,7 @@ int main(int argc, unsigned char**argv) {
         tam_nao_codificado++;
     }
     
-    rewind(entrada);
+    rewind(entrada); // volta pro início do arquivo
 
     for(i=0;i<tam_nao_codificado-1;i++){ 
         fscanf(entrada, "%c", &caractere);
@@ -131,49 +131,71 @@ int main(int argc, unsigned char**argv) {
 
     unsigned char * texto_codificado = calloc(tam_codificado, sizeof(unsigned char));
 
-    //função para resetar o ponteiro que le o arquivo
-    rewind(entrada);
+    rewind(entrada); // volta pro início do arquivo
 
     // printf("TAM COD: %d\n", tam_codificado);
     // printf("TAM NAO COD: %d\n",tam_nao_codificado);
     
+    bitmap* bm = bitmapInit(MAX_SIZE);
+
+    int j=0;
+
     for(i=0;i<tam_nao_codificado-1;i++){
         fscanf(entrada, "%c", &caractere);
         // fread(&caractere, sizeof(unsigned char), 1, arquivo);
-        strcat(texto_codificado, tabCode[caractere]);
+        // strcat(texto_codificado, tabCode[caractere]);
+
+        for(j=0;j<strlen(tabCode[caractere]);j++){
+            if (tabCode[caractere][j]=='1') bitmapAppendLeastSignificantBit(bm, 1);
+            else if (tabCode[caractere][j]=='0') bitmapAppendLeastSignificantBit(bm, 0);
+        }
+    }
+
+    printf("bitmap length: %d\n", bitmapGetLength(bm));
+
+    for (i = 0; i < bitmapGetLength(bm)/8; i++) {
+        fwrite(&bitmapGetContents(bm)[i], sizeof(unsigned char), 1, saida);
+    }
+
+    if (bitmapGetLength(bm)%8 != 0) {
+        fwrite(&bitmapGetContents(bm)[bitmapGetLength(bm)/8], sizeof(unsigned char), 1, saida);
     }
 
     // printf("%s\n", texto_codificado);
     // imprimeTabCode(tabCode);
 
-    unsigned char byte=0, aux=0;
 
-    i=0;
-    int j=7;
-    while (texto_codificado[i] != '\0') {
-        aux = 1;
-        if (texto_codificado[i] == '1') {
-            aux = aux << j;
-            byte = byte | aux;
-        }
-        j--;
 
-        if (j < 0) { // já foi percorrido 1 byte
-            fwrite(&byte, sizeof(unsigned char), 1, saida);
-            byte = 0;
-            j = 7;
-        }
+    /*============================================================================*/
+    // unsigned char byte=0, aux=0;
 
-        i++;
-    }
+    // i=0;
+    // j = 7;
+    // while (texto_codificado[i] != '\0') {
+    //     aux = 1;
+    //     if (texto_codificado[i] == '1') {
+    //         aux = aux << j;
+    //         byte = byte | aux;
+    //     }
+    //     j--;
 
-    if (j != 7) { // ainda existe um byte em formação
-        fwrite(&byte, sizeof(unsigned char), 1, saida);
-    }
+    //     if (j < 0) { // já foi percorrido 1 byte
+    //         fwrite(&byte, sizeof(unsigned char), 1, saida);
+    //         byte = 0;
+    //         j = 7;
+    //     }
+
+    //     i++;
+    // }
+
+    // if (j != 7) { // ainda existe um byte em formação
+    //     fwrite(&byte, sizeof(unsigned char), 1, saida);
+    // }
+    /*============================================================================*/
 
     // codifica(tabCode, bm, caractere); 
-    
     // fwrite(&caractere, sizeof(unsigned char), 1 ,saida);
+
     free(texto_codificado);
 
 
@@ -211,7 +233,7 @@ int main(int argc, unsigned char**argv) {
 
     /* ========================== Liberando a memória ========================== */
     // for(i=0;i<256;i++) bitmapLibera(bmVec[i]);
-    // bitmapLibera(bm);
+    bitmapLibera(bm);
     // free(bmVec);
 
     fclose(entrada);
