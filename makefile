@@ -1,4 +1,4 @@
-name = teste2
+name = teste
 file = txt
 
 all: prog warning verificador 
