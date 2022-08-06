@@ -1,4 +1,4 @@
-name = biblia
+name = teste2
 file = txt
 
 all: prog warning verificador 
