@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     //TODO: mudar o nome depois
     strcat(path, "_saida.txt");
 
-    FILE * saida = fopen(path, "wr");
+    FILE * saida = fopen(path, "wb");
 
     unsigned char byte;
     Arv * raiz = getPrimeiroNo(listaArvores);
@@ -63,7 +63,9 @@ int main(int argc, char **argv) {
             }
 
             if (getRamoEsq(aux) == NULL && getRamoDir(aux) == NULL) {
-                fprintf(saida, "%c", getChar(aux));
+                // fprintf(saida, "%c", getChar(aux));
+                unsigned char auxChar = getChar(aux);
+                fwrite(&auxChar, sizeof(unsigned char), 1, saida);
                 aux = raiz;
             }
         }

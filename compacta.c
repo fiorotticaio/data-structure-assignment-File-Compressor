@@ -20,12 +20,13 @@ int main(int argc, unsigned char**argv) {
 
     /* caminho do arquivo passado na execucao do programa */
     sprintf(path, "%s", argv[1]);
-    FILE * arquivo = fopen(path, "r");
+    FILE * arquivo = fopen(path, "rb");
 
     /* lendo o arquivo de texto e anotando as frequências no vetor */
     while(!feof(arquivo)){
         if (caractere != '\0') v[caractere] += 1;
-        fscanf(arquivo, "%c", &caractere);
+        // fscanf(arquivo, "%c", &caractere);
+        fread(&caractere, sizeof(unsigned char), 1, arquivo);
     }
     fclose(arquivo);
 
@@ -52,7 +53,7 @@ int main(int argc, unsigned char**argv) {
 
     
     /* abrindo o arquivo de entrada de novo pra ler o texto */
-    FILE * entrada = fopen(path, "r");
+    FILE * entrada = fopen(path, "rb");
 
     /* gerando o arquivo de saida */
     int qtdLetras = strlen(path);
@@ -68,7 +69,8 @@ int main(int argc, unsigned char**argv) {
     int tam_nao_codificado = 0;
     /* loop apenas para contar o tamanho do conteúdo do aquivo de entrada */
     while(!feof(entrada)) {
-        fscanf(entrada, "%c", &caractere);
+        // fscanf(entrada, "%c", &caractere);
+        fread(&caractere, sizeof(unsigned char), 1, entrada);
         tam_nao_codificado++;
     }
     
@@ -79,7 +81,8 @@ int main(int argc, unsigned char**argv) {
 
     int j = 0;
     for(i = 0; i < tam_nao_codificado-1; i++) {
-        fscanf(entrada, "%c", &caractere);
+        // fscanf(entrada, "%c", &caractere);
+        fread(&caractere, sizeof(unsigned char), 1, entrada);
 
         /* montando o vetor de bits (codificado) correspondente ao conteúdo */
         for(j = 0; j < strlen(tabCode[caractere]); j++) {
