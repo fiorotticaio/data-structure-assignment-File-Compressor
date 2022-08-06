@@ -10,7 +10,7 @@
 
 int main(int argc, unsigned char**argv) {
     /* Variaveis uteis */    
-    int i = 0, n = 0, k = 0;
+    int i = 0, j = 0, n = 0, k = 0;
     unsigned char path[100];
     unsigned char caractere = '\0';
     long int * v = malloc(sizeof(long int) * 256); // vetor de frequência
@@ -22,11 +22,20 @@ int main(int argc, unsigned char**argv) {
     sprintf(path, "%s", argv[1]);
     FILE * arquivo = fopen(path, "rb");
 
+    /* pegando a extensão do arquivo de entrada */
+    i = 0;
+    while (path[i] != '.') {
+        i++;
+    }
+    unsigned char extensao[10]; // a extensão do arquivo deve conter no máximo 10 caracteres 
+    sprintf(extensao, "%s", path+i);
+
+
     /* lendo o arquivo de texto e anotando as frequências no vetor */
+    caractere = '\0';
     while(!feof(arquivo)){
-        if (caractere != '\0') v[caractere] += 1;
-        // fscanf(arquivo, "%c", &caractere);
         fread(&caractere, sizeof(unsigned char), 1, arquivo);
+        if (caractere != '\0') v[caractere] += 1;
     }
     fclose(arquivo);
 
@@ -41,15 +50,12 @@ int main(int argc, unsigned char**argv) {
 
     OrdenaLista(listaArvores);
     Aplica_Huffman(listaArvores);
-    // ImprimeLista(listaArvores);
 
 
     /* Montando a tabela de codificação */
     int altura = calculaAlturaArvore_Huff(listaArvores);
     unsigned char** tabCode = alocaTabela(altura+1);
     geraTabCode(tabCode, getPrimeiroNo(listaArvores), "", altura+1);
-    // imprimeTabCode(tabCode);
-
 
     
     /* abrindo o arquivo de entrada de novo pra ler o texto */
@@ -61,6 +67,13 @@ int main(int argc, unsigned char**argv) {
     FILE* saida = fopen(strcat(path, ".comp"), "wb");
 
 
+    /* a primeira coisa do arquivo compactado vai ser o tamanho extensao 
+    do arquivo a ser descompactado seguido da propria extensão */
+    int tamExtnesao = strlen(extensao);
+    fwrite(&tamExtnesao, sizeof(int), 1, saida);
+    fwrite(extensao, sizeof(unsigned char), tamExtnesao, saida);
+
+
     /* escrevendo o vetor de frequência no arquivo compactado,
     ele é nossa chave de decodificação */
     fwrite(v, sizeof(long int), 256, saida); 
@@ -69,19 +82,17 @@ int main(int argc, unsigned char**argv) {
     int tam_nao_codificado = 0;
     /* loop apenas para contar o tamanho do conteúdo do aquivo de entrada */
     while(!feof(entrada)) {
-        // fscanf(entrada, "%c", &caractere);
         fread(&caractere, sizeof(unsigned char), 1, entrada);
         tam_nao_codificado++;
     }
     
     rewind(entrada); // volta pro início do arquivo
 
-    
-    bitmap* bm = bitmapInit(MAX_SIZE);
 
-    int j = 0;
-    for(i = 0; i < tam_nao_codificado-1; i++) {
-        // fscanf(entrada, "%c", &caractere);
+    bitmap* bm = bitmapInit(MAX_SIZE);
+  
+
+    for (i = 0; i < tam_nao_codificado-1; i++) {
         fread(&caractere, sizeof(unsigned char), 1, entrada);
 
         /* montando o vetor de bits (codificado) correspondente ao conteúdo */

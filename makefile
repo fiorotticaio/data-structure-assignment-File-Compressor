@@ -1,4 +1,4 @@
-name = teste
+name = biblia
 file = txt
 
 all: prog warning verificador 
@@ -12,10 +12,10 @@ warning:
 
 verificador: prog
 	@ echo "\033[1;36m\n[verificador] \033[mTamanho dos arquivos:"
-	@ du -h $(name).comp && du -h $(name).$(file) && du -h $(name)_saida.$(file)
+	@ du -h $(name).comp && du -h $(name).$(file) && du -h ./arquivos_de_saida/$(name).$(file)
 
 	@ echo "\033[1;36m\n[verificador] \033[mDiff entre os arquivos:"
-	@ -diff $(name).$(file) $(name)_saida.$(file)
+	@ -diff $(name).$(file) ./arquivos_de_saida/$(name).$(file)
 	@ echo "---\n"
 
 val: clear compacta descompacta

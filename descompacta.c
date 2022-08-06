@@ -4,10 +4,8 @@
 #include <math.h>
 
 #include "./headers/Lista_arv.h"
-#include "./headers/bitmap.h"
 
 #define MAX_SIZE 3567587328 // Limite de 3 GIGA bytes
-
 
 static unsigned int bit(unsigned char byte, int pos){
     unsigned char aux = (1 << pos);
@@ -19,11 +17,20 @@ int main(int argc, char **argv) {
     /* Variaveis uteis */
     int i = 0, j = 0, altura = 0, k = 0;
     long int *v = malloc(sizeof(long int) * 256);  // vetor de frequência
-    char path[100];
+    unsigned char path[100];
+    unsigned char diretorio[1000]; // diretório deve ter no máximo 1000 caracteres
 
     /* Caminho do arquivo passado na execucao do programa */
     sprintf(path, "%s", argv[1]);
     FILE * entrada = fopen(path, "rb");
+
+
+    int tamExtensao = 0;
+    /* lendo o tamanho da extensão do aquivo a ser compactado */
+    fread(&tamExtensao, sizeof(int), 1, entrada);
+    unsigned char extensao[tamExtensao+1]; // +1 para o '\0'
+    /* lendo a extensão em sim */
+    fread(extensao, sizeof(unsigned char), tamExtensao, entrada);
 
 
     /* lendo o vetor de frequências */
@@ -40,15 +47,18 @@ int main(int argc, char **argv) {
 
     OrdenaLista(listaArvores);
     Aplica_Huffman(listaArvores);
-    // ImprimeLista(listaArvores);
 
 
     /* gerando o arquivo de saída */
     path[strlen(path)-5] = '\0'; // tirando o .comp do nome
-    //TODO: mudar o nome depois
-    strcat(path, "_saida.txt");
+    strcat(path, extensao); // juntando com a extensão original
 
-    FILE * saida = fopen(path, "wb");
+
+    /* gerando o arquivo de saída numa pasta separada pra poder comparar com diff */
+    // TODO: tirar dessa pasta separada e colocar no diretorio raiz mesmo
+    sprintf(diretorio, "arquivos_de_saida/%s", path);
+
+    FILE * saida = fopen(diretorio, "wb");
 
     unsigned char byte;
     Arv * raiz = getPrimeiroNo(listaArvores);
