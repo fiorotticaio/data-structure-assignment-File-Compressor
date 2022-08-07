@@ -166,7 +166,7 @@ void Aplica_Huffman(Lista * lista){
     while(p!=NULL && p->prox!=NULL) {
         
         long int pesoTotal = getPeso(p->arvore) + getPeso(p->prox->arvore);
-        Arv * a = abb_cria(0, '-', pesoTotal, p->arvore, p->prox->arvore);
+        Arv * a = abb_cria(getChar(p->arvore), pesoTotal, p->arvore, p->prox->arvore);
 
         prox = p->prox->prox;
         Arv * remover1 = p->prox->arvore;

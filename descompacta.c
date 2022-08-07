@@ -1,69 +1,101 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "./headers/Lista_arv.h"
-#include "./headers/bitmap.h"
+
+#define MAX_SIZE 3567587328 // Limite de 3 GIGA bytes
+
+static unsigned int bit(unsigned char byte, int pos){
+    unsigned char aux = (1 << pos);
+    return byte & aux;
+}
 
 #define MAX_SIZE 1000000 // teste com 1 MEGA bytes
 
 
 int main(int argc, char **argv) {
+    /* variáveis úteis */
+    int i = 0, j = 0, altura = 0, k = 0;
+    long int *v = malloc(sizeof(long int) * 256);  // vetor de frequência
+    unsigned char path[100];
+    unsigned char diretorio[1000]; // diretório deve ter no máximo 1000 caracteres
 
-    // abrindo o arquivo de entrada
-    char path[100];
+    /* caminho do arquivo passado na execucao do programa */
     sprintf(path, "%s", argv[1]);
-    FILE * entrada = fopen(path, "r");
+    FILE * entrada = fopen(path, "rb");
 
-    // abrindo o arquivo de saida
-    // int qtdLetras = strlen(path);
-    // path[qtdLetras-4] = '\0'; // tirar o .comp do path
-    // FILE* saida = fopen(strcat(path, ".txt"), "w");
 
+    int tam_extensao = 0;
+    /* lendo o tamanho da extensão do aquivo a ser compactado */
+    fread(&tam_extensao, sizeof(int), 1, entrada);
+    unsigned char * extensao = malloc(sizeof(unsigned char) * (tam_extensao+1)); // +1 para o '\0'
     
-    // lendo a altura da tabela no arquivo compactado
-    int altura = 0;
-    fread(&altura, sizeof(int), 1, entrada);
-    printf("altura descompactada: %d\n", altura);
+    /* lendo a extensão em sim */
+    fread(extensao, sizeof(unsigned char), tam_extensao, entrada);
+    extensao[tam_extensao] = '\0';
+    
+    /* lendo o vetor de frequências */
+    fread(v, sizeof(long int), 256, entrada);
+    
+
+    /* inserindo as arvores com as frequências na lista */
+    Lista * listaArvores = InicializaListaVazia();
+    for(i = 0; i < 256; i++) {
+        if (v[i] > 0) {
+            InsereArvUlt(listaArvores, abb_cria((char)i, v[i], abb_cria_vazia(), abb_cria_vazia()));
+        }
+    }
+
+    OrdenaLista(listaArvores);
+    Aplica_Huffman(listaArvores);
+
+    /* gerando o arquivo de saída */
+    path[strlen(path)-5] = '\0'; // tirando o .comp do nome
+    strcat(path, extensao); // juntando com a extensão original
 
 
-    // lendo a tabela de codificação (montando a árvore de huffman)
-    // TODO
-    Arv* arvHuff;
+    /* gerando o arquivo de saída numa pasta separada pra poder comparar com diff */
+    // TODO: tirar dessa pasta separada e colocar no diretorio raiz mesmo
+    sprintf(diretorio, "arquivos_de_saida/%s", path);
 
+    FILE * saida = fopen(diretorio, "wb");
 
-    // lendo o conteúdo do arquivo (supondo já saber a árovre de huffman)
-    int i = 0;
     unsigned char byte;
-    Arv* arvAux = arvHuff;
-
-    /* DESCOMENTAR DEPOIS QUE TIVER A ÁRVORE PRONTA */
-    // while (fread(&byte, sizeof(unsigned char), 1, entrada)) {
-        
-    //     for (i = 7; i >= 0; i--) {
-    //         unsigned char aux = (1 << i); // 00000001 deslocado i vezes pra esquerda
-
-    //         if (byte & aux) { // o bit é 1
-    //             arvHuff = arvHuff->dir;
-
-    //         } else { // o bit é zero
-    //             arvHuff = arvHuff->esq;
-    //         }
-
-    //         if (arvHuff->esq == NULL && arvHuff->dir == NULL) { // cheggou num nó folha
-    //             fprintf(saida, "%c", getInfo(arvHuff));
-    //             arvAux = arvHuff; // volta pro início da árvore de huffman
-    //         }
-
-    //     }
-
-    // }
+    Arv * raiz = getPrimeiroNo(listaArvores);
+    Arv * aux = raiz;
 
 
+    int tam_codificado=0;
+    fread(&tam_codificado, sizeof(int), 1, entrada);
 
-    // liberando a memória alocada
+    for (j=0;j<tam_codificado;j+=8) {
+        fread(&byte, sizeof(unsigned char), 1, entrada);
+
+
+    // while(fread(&byte, sizeof(unsigned char), 1, entrada)){
+        for (i = 7; i >= 0; i--) {
+            if (bit(byte, i)) {
+                aux = getRamoDir(aux);
+            } else {
+                aux = getRamoEsq(aux);
+            }
+
+            if (getRamoEsq(aux) == NULL && getRamoDir(aux) == NULL) {
+                unsigned char auxChar = getChar(aux);
+                fwrite(&auxChar, sizeof(unsigned char), 1, saida);
+                aux = raiz;
+            }
+        }
+    }
+
+    /* liberando toda a memória alocada */
     fclose(entrada);
-    // fclose(saida);
+    fclose(saida);
+    LiberaLista(listaArvores);
+    free(extensao);
+    free(v);
 
     return 0;
 }

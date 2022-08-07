@@ -26,7 +26,7 @@ Arv* abb_cria_vazia(void);
  *               ponteiros para árvore esquerda e direita existem
  * pós-condição: ponteiro de retorno aponta para a árvore criada
  */
-Arv* abb_cria(int ehFolha, unsigned char caracter, long int peso, Arv* e, Arv* d);
+Arv* abb_cria(unsigned char caracter, long int peso, Arv* e, Arv* d);
 
 /** Imprime árvore binária
  * input: ponteiro para árvore
@@ -62,6 +62,8 @@ void preenche_bitmap(Arv* a, unsigned char caracter, bitmap* bm);
  * pós-condição: ponteiro de retorno aponta para árvore com o caracter adicionado
  */
 Arv* abb_insere(Arv* a, unsigned char caracter, long int peso);
+
+void abb_preenche_codigos(Arv* a, unsigned char * codigo, int indice, char letra);
 
 /** Retira um caracter da árvore binária
  * input: ponteiro para a árvore, caracter a ser retirado,
@@ -180,5 +182,7 @@ void imprimeTabCode(unsigned char** tabela);
 void liberaTabCode(unsigned char** tabela);
 
 void codifica(unsigned char** tabela, bitmap* bm, unsigned char caractere);
+
+void decodifica(Arv * a, bitmap* bm, FILE * saida);
 
 #endif // ARVORE_BIN
