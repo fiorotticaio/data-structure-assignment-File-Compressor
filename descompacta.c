@@ -12,8 +12,6 @@ static unsigned int bit(unsigned char byte, int pos){
     return byte & aux;
 }
 
-#define MAX_SIZE 1000000 // teste com 1 MEGA bytes
-
 
 int main(int argc, char **argv) {
     /* variáveis úteis */

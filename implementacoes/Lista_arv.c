@@ -96,7 +96,7 @@ Arv* RetiraArvLista(Lista* lista, Arv * arvore) {
     }
 
     if (p==NULL) { // não encontrou o caractere ou a lista está vazia
-        printf("Lista vazia ou o caractere '%c' nao foi encontrado\n", getInfo(arvore));
+        printf("Lista vazia ou o caractere '%c' nao foi encontrado\n", getChar(arvore));
         return NULL;
     }
 

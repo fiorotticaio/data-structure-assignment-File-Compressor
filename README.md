@@ -35,14 +35,6 @@ https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/
     
     [x] TROCAR TODOS OS char PARA unsigned char
 
-<<<<<<< HEAD
-    [X] Descobrir como usar o bitmap
-        (escrever arquivos .comp)
-
-    [ ] Verificar documentação dos cabeçalhos (.h)
-
-    [ ] Descobrir como serielizar a árvore
-=======
     [x] Verificar documentação dos cabeçalhos (.h)
         [ ] Padronizar cabeçalhos e nome das funções do arquivo da arvore 
         para que todos começem com `abb_`
@@ -51,7 +43,6 @@ https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/
         (escrever arquivos .comp)
 
     [x] Descobrir como serielizar a árvore
->>>>>>> testando_leitura_binario
     	- Um long int defininfo o tamanho da árvore, seguido da serielização de 0 para nós internos e 1 para nós folha seguidos dos o bits do caractere
         - A tabela de codificação direto
 
