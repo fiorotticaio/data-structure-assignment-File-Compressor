@@ -33,19 +33,19 @@ https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/
 
     [x] Usar Graphviz online para fazer os diagramas das árvores
     
-    [X] TROCAR TODOS OS char PARA unsigned char
+    [x] TROCAR TODOS OS char PARA unsigned char
 
-    [X] Verificar documentação dos cabeçalhos (.h)
+    [x] Verificar documentação dos cabeçalhos (.h)
         [ ] Padronizar cabeçalhos e nome das funções do arquivo da arvore 
         para que todos começem com `abb_`
 
-    [X] Descobrir como usar o bitmap
+    [x] Descobrir como usar o bitmap
         (escrever arquivos .comp)
 
-    [X] Descobrir como serielizar a árvore
+    [x] Descobrir como serielizar a árvore
     	- Um long int defininfo o tamanho da árvore, seguido da serielização de 0 para nós internos e 1 para nós folha seguidos dos o bits do caractere
         - A tabela de codificação direto
 
-    [ ] Consertar o erro do strcat no descompacta
+    [x] Consertar o erro do strcat no descompacta
 
     [ ] Fazer funcionar direto pra qualquer arquivo

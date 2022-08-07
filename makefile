@@ -3,15 +3,20 @@ file = txt
 
 all: prog warning verificador 
 
+hex: prog
+	@ echo "\033[1;93m\n[hexdump] \033[mConteudo em hexadecimal do arquivo compactado"
+	@ echo "\033[1;93m|\033[m n° de linhas \033[1;93m|\033[m conteudo \033[1;93m|\033[m conteudo convertido em %_p\n"
+	@ hexdump -C $(name).comp
+
 prog: clear compacta descompacta
-	@ ./compacta $(name).$(file)
-	@ ./descompacta $(name).comp
+	@ ./compacta.out $(name).$(file)
+	@ ./descompacta.out $(name).comp
 
 warning:
 	@ echo "\033[1;93m\n[warning] \033[mTamanho máximo permitido: 3.5 gb (long int)"
 
 verificador: prog
-	@ echo "\033[1;36m\n[verificador] \033[mTamanho dos arquivos:"
+	@ echo "\033[1;36m\n[verificador] \033[mTamanho (aprox) dos arquivos:"
 	@ du -h $(name).comp && du -h $(name).$(file) && du -h ./arquivos_de_saida/$(name).$(file)
 
 	@ echo "\033[1;36m\n[verificador] \033[mDiff entre os arquivos:"
@@ -35,12 +40,12 @@ bitmap:
 	@ echo "\033[1;32m[compilador] \033[mArquivo 'bitmap' compilado com sucesso! ✅"
 
 compacta: bitmap Arvore_bin Lista_arv
-	@ gcc -o compacta *.o compacta.c -lm
-	@ echo "\033[1;32m[compilador] \033[mArquivo 'compacta' gerado com sucesso! ✅"
+	@ gcc -o compacta.out *.o compacta.c -lm
+	@ echo "\033[1;32m[executaveis] \033[mArquivo 'compacta.out' gerado com sucesso! ✅"
 
 descompacta: Arvore_bin Lista_arv
-	@ gcc -o descompacta *.o descompacta.c -lm
-	@ echo "\033[1;32m[compilador] \033[mArquivo 'descompacta' gerado com sucesso! ✅"
+	@ gcc -o descompacta.out *.o descompacta.c -lm
+	@ echo "\033[1;32m[executaveis] \033[mArquivo 'descompacta.out' gerado com sucesso! ✅"
 
 clear:
 	@ rm -f *.o compacta descompacta

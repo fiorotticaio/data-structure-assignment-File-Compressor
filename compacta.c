@@ -8,7 +8,7 @@
 #define MAX_SIZE 3567587328 // Limite de 3 GIGA bytes
 
 int main(int argc, unsigned char**argv) {
-    /* Variaveis uteis */    
+    /* variáveis úteis */    
     int i = 0, j = 0, n = 0, k = 0;
     unsigned char path[100];
     unsigned char caractere = '\0';
@@ -17,18 +17,15 @@ int main(int argc, unsigned char**argv) {
     
     for(i = 0; i < 256; i++) v[i] = 0; // limpando o vetor de frequência
 
-    /* caminho do arquivo passado na execucao do programa */
+    /* caminho do arquivo passado na execução do programa */
     sprintf(path, "%s", argv[1]);
     FILE * arquivo = fopen(path, "rb");
 
     /* pegando a extensão do arquivo de entrada */
     i = 0;
-    while (path[i] != '.') {
-        i++;
-    }
+    while (path[i] != '.') i++;
     unsigned char extensao[10]; // a extensão do arquivo deve conter no máximo 10 caracteres 
     sprintf(extensao, "%s", path+i);
-
 
     /* lendo o arquivo de texto e anotando as frequências no vetor */
     caractere = '\0';
@@ -49,8 +46,7 @@ int main(int argc, unsigned char**argv) {
 
     OrdenaLista(listaArvores);
     Aplica_Huffman(listaArvores);
-
-
+    
     /* Montando a tabela de codificação */
     int altura = calculaAlturaArvore_Huff(listaArvores);
     unsigned char** tabCode = alocaTabela(altura+1);
@@ -68,10 +64,9 @@ int main(int argc, unsigned char**argv) {
 
     /* a primeira coisa do arquivo compactado vai ser o tamanho extensao 
     do arquivo a ser descompactado seguido da propria extensão */
-    int tamExtnesao = strlen(extensao);
-    fwrite(&tamExtnesao, sizeof(int), 1, saida);
-    fwrite(extensao, sizeof(unsigned char), tamExtnesao, saida);
-
+    int tam_extensao = strlen(extensao);
+    fwrite(&tam_extensao, sizeof(int), 1, saida);
+    fwrite(extensao, sizeof(unsigned char), tam_extensao, saida);
 
     /* escrevendo o vetor de frequência no arquivo compactado,
     ele é nossa chave de decodificação */
@@ -89,7 +84,8 @@ int main(int argc, unsigned char**argv) {
 
 
     bitmap* bm = bitmapInit(MAX_SIZE);
-  
+    
+    int tam_codificado = 0;
 
     for (i = 0; i < tam_nao_codificado-1; i++) {
         fread(&caractere, sizeof(unsigned char), 1, entrada);
@@ -98,9 +94,10 @@ int main(int argc, unsigned char**argv) {
         for(j = 0; j < strlen(tabCode[caractere]); j++) {
             if (tabCode[caractere][j] == '1') bitmapAppendLeastSignificantBit(bm, 1);
             else if (tabCode[caractere][j] == '0') bitmapAppendLeastSignificantBit(bm, 0);
+
+            tam_codificado++;
         }
     }
-
 
     int resto = bitmapGetLength(bm)%8;
     if (resto != 0) {
@@ -111,11 +108,13 @@ int main(int argc, unsigned char**argv) {
         }
     }
 
+    // escrevendo o tamanho do conteudo codificado
+    fwrite(&tam_codificado, sizeof(int), 1, saida);
+
     /* escrevendo os bytes no arquivo compactado */
     for (i = 0; i < bitmapGetLength(bm)/8; i++) {
         fwrite(&bitmapGetContents(bm)[i], sizeof(unsigned char), 1, saida);
     }
-
 
     /* liberando toda a memória alocada */
     bitmapLibera(bm);
