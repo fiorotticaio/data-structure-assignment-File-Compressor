@@ -45,7 +45,7 @@ void ImprimeLista(Lista* lista) {
     if (lista->Prim == NULL) return;
 
     Celula* p;
-    // for (p = lista->Prim; p != NULL; p = p->prox) abb_imprime(p->arvore); printf("\n");
+    for (p = lista->Prim; p != NULL; p = p->prox) abb_imprime(p->arvore); printf("\n");
 
     //impressao no formato graphviz
     printf("digraph G {\n\n");
@@ -96,7 +96,7 @@ Arv* RetiraArvLista(Lista* lista, Arv * arvore) {
     }
 
     if (p==NULL) { // não encontrou o caractere ou a lista está vazia
-        printf("Lista vazia ou o caractere '%c' nao foi encontrado\n", getInfo(arvore));
+        printf("Lista vazia ou o caractere '%c' nao foi encontrado\n", getChar(arvore));
         return NULL;
     }
 

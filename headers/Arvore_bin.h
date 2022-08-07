@@ -105,7 +105,7 @@ long int getPeso(Arv * a);
  * pré-condição: ponteiro para árvore existe
  * pós-condição: arvore não é alterada
  */
-unsigned char getInfo(Arv * a);
+unsigned char getChar(Arv * a);
 
 /** Retorna o ponteiro para o ramo esquerdo da arvore
  * input: ponteiro para arvore
@@ -184,5 +184,9 @@ void liberaTabCode(unsigned char** tabela);
 void codifica(unsigned char** tabela, bitmap* bm, unsigned char caractere);
 
 void decodifica(Arv * a, bitmap* bm, FILE * saida);
+
+void abb_serializa(Arv * a, bitmap * bm);
+
+int abb_desserializa(Arv *a, char * serielizacao, int indice);
 
 #endif // ARVORE_BIN

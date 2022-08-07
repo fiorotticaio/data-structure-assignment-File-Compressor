@@ -5,6 +5,7 @@
 #include "./headers/Lista_arv.h"
 #include "./headers/bitmap.h"
 
+//TODO: verificar necessidade desse max_size
 #define MAX_SIZE 3567587328 // Limite de 3 GIGA bytes
 
 int main(int argc, unsigned char**argv) {
@@ -46,7 +47,7 @@ int main(int argc, unsigned char**argv) {
 
     OrdenaLista(listaArvores);
     Aplica_Huffman(listaArvores);
-    
+
     /* Montando a tabela de codificação */
     int altura = calculaAlturaArvore_Huff(listaArvores);
     unsigned char** tabCode = alocaTabela(altura+1);
@@ -68,9 +69,26 @@ int main(int argc, unsigned char**argv) {
     fwrite(&tam_extensao, sizeof(int), 1, saida);
     fwrite(extensao, sizeof(unsigned char), tam_extensao, saida);
 
-    /* escrevendo o vetor de frequência no arquivo compactado,
-    ele é nossa chave de decodificação */
-    fwrite(v, sizeof(long int), 256, saida); 
+    //criando a arvore serielizada
+    bitmap * arvore_serielizada = bitmapInit(MAX_SIZE);
+    abb_serializa(getPrimeiroNo(listaArvores), arvore_serielizada);
+
+    int tam_arvore_serielizada = bitmapGetLength(arvore_serielizada);
+    int bits_restantes = tam_arvore_serielizada%8;
+    if (bits_restantes != 0) {
+        while (bits_restantes < 8) {
+            bitmapAppendLeastSignificantBit(arvore_serielizada, 0);
+            bits_restantes++;
+        }
+    }
+
+    //escrevendo o tamanho da arvore serielizada
+    fwrite(&tam_arvore_serielizada, sizeof(int), 1, saida);
+
+    //escrevendo a arvore 
+    for (i = 0; i < bitmapGetLength(arvore_serielizada)/8; i++) {
+        fwrite(&bitmapGetContents(arvore_serielizada)[i], sizeof(unsigned char), 1, saida);
+    }
 
 
     int tam_nao_codificado = 0;
@@ -82,11 +100,9 @@ int main(int argc, unsigned char**argv) {
     
     rewind(entrada); // volta pro início do arquivo
 
-
+    //montando bitmap com conteudo codificado
     bitmap* bm = bitmapInit(MAX_SIZE);
-    
     int tam_codificado = 0;
-
     for (i = 0; i < tam_nao_codificado-1; i++) {
         fread(&caractere, sizeof(unsigned char), 1, entrada);
 
@@ -99,9 +115,9 @@ int main(int argc, unsigned char**argv) {
         }
     }
 
+    /* completando o resto do byte (com zeros) */
     int resto = bitmapGetLength(bm)%8;
     if (resto != 0) {
-        /* completando o resto do byte (com zeros) */
         while (resto < 8) {
             bitmapAppendLeastSignificantBit(bm, 0);
             resto++;
@@ -111,13 +127,14 @@ int main(int argc, unsigned char**argv) {
     // escrevendo o tamanho do conteudo codificado
     fwrite(&tam_codificado, sizeof(int), 1, saida);
 
-    /* escrevendo os bytes no arquivo compactado */
+    /* escrevendo os bytes do conteudo no arquivo compactado */
     for (i = 0; i < bitmapGetLength(bm)/8; i++) {
         fwrite(&bitmapGetContents(bm)[i], sizeof(unsigned char), 1, saida);
     }
 
     /* liberando toda a memória alocada */
     bitmapLibera(bm);
+    bitmapLibera(arvore_serielizada);
     fclose(entrada);
     fclose(saida);
     liberaTabCode(tabCode);

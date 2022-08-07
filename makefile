@@ -24,8 +24,8 @@ verificador: prog
 	@ echo "---\n"
 
 val: clear compacta descompacta
-	@ valgrind ./compacta $(name).$(file)
-	@ valgrind ./descompacta $(name).comp
+	@ valgrind ./compacta.out $(name).$(file)
+	@ valgrind ./descompacta.out $(name).comp
 
 Arvore_bin:
 	@ gcc -c ./implementacoes/Arvore_bin.c -lm
