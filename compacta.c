@@ -32,7 +32,9 @@ int main(int argc, unsigned char**argv) {
     caractere = '\0';
     while(!feof(arquivo)){
         fread(&caractere, sizeof(unsigned char), 1, arquivo);
-        if (caractere != '\0') v[caractere] += 1;
+        //TODO: isso aqui faz os outros tipos de arquivos sairem cagados
+        // if (caractere != '\0') v[caractere] += 1;
+        v[caractere] += 1;
     }
     fclose(arquivo);
 

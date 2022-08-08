@@ -1,4 +1,4 @@
-name = biblia
+name = texto_mediano
 file = txt
 
 all: prog warning verificador 
@@ -48,5 +48,5 @@ descompacta: Arvore_bin Lista_arv
 	@ echo "\033[1;32m[executaveis] \033[mArquivo 'descompacta.out' gerado com sucesso! ✅"
 
 clear:
-	@ rm -f *.o compacta descompacta
+	@ rm -f *.o compacta descompacta *.comp
 	@ echo "\033[1;34m[limpador] \033[mDiretório Limpo! ✅\n"
