@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../headers/Arvore_bin.h"
 #include "../headers/Lista_arv.h"
 
 typedef struct celula Celula;
@@ -53,7 +54,7 @@ void ImprimeLista(Lista* lista) {
     printf("}\n\n");
 }
 
-void InsereArvUlt(Lista* lista, Arv* arvore) {
+void InsereArvUltLista(Lista* lista, Arv* arvore) {
     Celula* nova = (Celula*) malloc(sizeof(Celula));
     nova->arvore = arvore;
     nova->prox = NULL;
@@ -70,20 +71,6 @@ void InsereArvUlt(Lista* lista, Arv* arvore) {
     lista->tam++;
 }
 
-//TODO: retirar isso no futuro
-
-// void InsereArvPrim(Lista* lista, Arv* aluno) {
-//     Celula* nova = (Celula*) malloc(sizeof(Celula));
-
-//     nova->aluno = aluno;
-//     nova->prox = lista->Prim;
-//     lista->Prim = nova;
-
-//     if (lista->Ult == NULL) { // lista estava vazia inicialmente
-//         lista->Ult = nova;
-//     }
-// }
-
 Arv* RetiraArvLista(Lista* lista, Arv * arvore) {
     Celula* p = lista->Prim;
     Celula* ant = NULL; 
@@ -96,7 +83,7 @@ Arv* RetiraArvLista(Lista* lista, Arv * arvore) {
     }
 
     if (p==NULL) { // não encontrou o caractere ou a lista está vazia
-        printf("Lista vazia ou o caractere '%c' nao foi encontrado\n", getChar(arvore));
+        printf("Lista vazia ou o caractere '%c' nao foi encontrado\n", abb_get_char(arvore));
         return NULL;
     }
 
@@ -140,7 +127,7 @@ void OrdenaLista(Lista * lista){
   
         while (p->prox != q) 
         { 
-            if (getPeso(p->arvore) > getPeso(p->prox->arvore)) 
+            if (abb_get_peso(p->arvore) > abb_get_peso(p->prox->arvore)) 
             { 
                 Arv * temp = p->arvore;
                 p->arvore = p->prox->arvore;
@@ -165,8 +152,8 @@ void Aplica_Huffman(Lista * lista){
     
     while(p!=NULL && p->prox!=NULL) {
         
-        long int pesoTotal = getPeso(p->arvore) + getPeso(p->prox->arvore);
-        Arv * a = abb_cria(getChar(p->arvore), pesoTotal, p->arvore, p->prox->arvore);
+        long int pesoTotal = abb_get_peso(p->arvore) + abb_get_peso(p->prox->arvore);
+        Arv * a = abb_cria(abb_get_char(p->arvore), pesoTotal, p->arvore, p->prox->arvore);
 
         prox = p->prox->prox;
         Arv * remover1 = p->prox->arvore;
@@ -177,7 +164,7 @@ void Aplica_Huffman(Lista * lista){
         
         p = prox;
 
-        InsereArvUlt(lista, a);
+        InsereArvUltLista(lista, a);
     }
 }
 
@@ -185,12 +172,7 @@ int calculaAlturaArvore_Huff(Lista* lista) {
     return abb_altura(lista->Prim->arvore);
 }
 
-Arv* getPrimeiroNo(Lista* lista) {
+Arv* GetPrimeiroNoLista(Lista* lista) {
     return lista->Prim->arvore;
 }
 
-void CodificaNos(Lista* lista) {
-    unsigned char* codigo = strdup("");
-    abb_codifica_nos(lista->Prim->arvore, codigo);
-    free(codigo);
-}

@@ -73,13 +73,13 @@ int main(int argc, char **argv) {
         fread(&byte, sizeof(unsigned char), 1, entrada);
         for (i = 7; i >= 0; i--) {
             if (bit(byte, i)) {
-                aux = getRamoDir(aux);
+                aux = abb_get_dir(aux);
             } else {
-                aux = getRamoEsq(aux);
+                aux = abb_get_esq(aux);
             }
 
-            if (getRamoEsq(aux) == NULL && getRamoDir(aux) == NULL) {
-                unsigned char auxChar = getChar(aux);
+            if (abb_get_esq(aux) == NULL && abb_get_dir(aux) == NULL) {
+                unsigned char auxChar = abb_get_char(aux);
                 fwrite(&auxChar, sizeof(unsigned char), 1, saida);
                 aux = arv_huffman;
             }

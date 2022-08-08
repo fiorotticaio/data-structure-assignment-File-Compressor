@@ -1,4 +1,4 @@
-name = texto_mediano
+name = biblia
 file = txt
 
 all: prog warning verificador 

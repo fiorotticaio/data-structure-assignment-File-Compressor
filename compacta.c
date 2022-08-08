@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "./headers/Lista_arv.h"
 #include "./headers/bitmap.h"
@@ -22,6 +23,11 @@ int main(int argc, unsigned char**argv) {
     sprintf(path, "%s", argv[1]);
     FILE * arquivo = fopen(path, "rb");
 
+    if (arquivo==NULL) {
+        printf("[ERRO] Arquivo não encontrado!\n");
+        assert(1);
+    }
+
     /* pegando a extensão do arquivo de entrada */
     i = 0;
     while (path[i] != '.') i++;
@@ -32,8 +38,6 @@ int main(int argc, unsigned char**argv) {
     caractere = '\0';
     while(!feof(arquivo)){
         fread(&caractere, sizeof(unsigned char), 1, arquivo);
-        //TODO: isso aqui faz os outros tipos de arquivos sairem cagados
-        // if (caractere != '\0') v[caractere] += 1;
         v[caractere] += 1;
     }
     fclose(arquivo);
@@ -43,7 +47,7 @@ int main(int argc, unsigned char**argv) {
     Lista * listaArvores = InicializaListaVazia();
     for(i = 0; i < 256; i++) {
         if (v[i] > 0) {
-            InsereArvUlt(listaArvores, abb_cria((char)i, v[i], abb_cria_vazia(), abb_cria_vazia()));
+            InsereArvUltLista(listaArvores, abb_cria((char)i, v[i], abb_cria_vazia(), abb_cria_vazia()));
         }
     }
 
@@ -52,8 +56,8 @@ int main(int argc, unsigned char**argv) {
 
     /* Montando a tabela de codificação */
     int altura = calculaAlturaArvore_Huff(listaArvores);
-    unsigned char** tabCode = alocaTabela(altura+1);
-    geraTabCode(tabCode, getPrimeiroNo(listaArvores), "", altura+1);
+    unsigned char** tabCode = abb_aloca_tabela(altura+1);
+    abb_gera_tabela(tabCode, GetPrimeiroNoLista(listaArvores), "", altura+1);
 
     
     /* abrindo o arquivo de entrada de novo pra ler o texto */
@@ -73,7 +77,7 @@ int main(int argc, unsigned char**argv) {
 
     //criando a arvore serielizada
     bitmap * arvore_serielizada = bitmapInit(MAX_SIZE);
-    abb_serializa(getPrimeiroNo(listaArvores), arvore_serielizada);
+    abb_serializa(GetPrimeiroNoLista(listaArvores), arvore_serielizada);
 
     int tam_arvore_serielizada = bitmapGetLength(arvore_serielizada);
     int bits_restantes = tam_arvore_serielizada%8;
@@ -139,7 +143,7 @@ int main(int argc, unsigned char**argv) {
     bitmapLibera(arvore_serielizada);
     fclose(entrada);
     fclose(saida);
-    liberaTabCode(tabCode);
+    abb_libera_tabela(tabCode);
     LiberaLista(listaArvores);
     free(v);
 
