@@ -13,7 +13,6 @@ static unsigned int bit(unsigned char byte, int pos){
     return byte & aux;
 }
 
-
 int main(int argc, char **argv) {
     /* variáveis úteis */
     int i = 0, j = 0, altura = 0, k = 0;
@@ -27,22 +26,26 @@ int main(int argc, char **argv) {
     int tam_extensao = 0;
     /* lendo o tamanho da extensão do aquivo a ser compactado */
     fread(&tam_extensao, sizeof(int), 1, entrada);
-    unsigned char * extensao = malloc(sizeof(unsigned char) * (tam_extensao+1)); // +1 para o '\0'
+    unsigned char * extensao = (unsigned char *) malloc(sizeof(unsigned char) * (tam_extensao+1)); // +1 para o '\0'
     
     /* lendo a extensão em sim */
     fread(extensao, sizeof(unsigned char), tam_extensao, entrada);
     extensao[tam_extensao] = '\0';
 
     // lendo o tamanho da arvore serielizada
-    int tam_arvore_serielizada;
+    int tam_arvore_serielizada = 0;
     fread(&tam_arvore_serielizada, sizeof(int), 1, entrada);
 
     //lendo a arvore serielizada
-    char * serielizacao = malloc(sizeof(char)*(tam_arvore_serielizada+1));// +1 para o '\0'
+    unsigned char * serielizacao = (unsigned char *) malloc(sizeof(unsigned char) * (tam_arvore_serielizada+1));// +1 para o '\0'
+    k = 0;
     unsigned char byte;
     for(i = 0; i < tam_arvore_serielizada; i+=8){
-        fread(&byte, sizeof(unsigned char),1, entrada);
+        fread(&byte, sizeof(unsigned char), 1, entrada);
         for (j = 7; j >= 0; j--){
+
+            if (k >= tam_arvore_serielizada) break;
+
             if (bit(byte, j)) serielizacao[k] = '1';
             else serielizacao[k] = '0';
             k++;
@@ -65,17 +68,19 @@ int main(int argc, char **argv) {
     FILE * saida = fopen(diretorio, "wb");
 
     // lendo tamanho codificado
-    int tam_codificado=0;
+    int tam_codificado = 0;
     fread(&tam_codificado, sizeof(int), 1, entrada);
 
     //lendo conteudo do texto compactado e usando a arvore para decodificar
     Arv * aux = arv_huffman;
-    for (j=0;j<tam_codificado;j+=8) {
+    k = 0;
+    for (j = 0; j < tam_codificado; j += 8) {
         fread(&byte, sizeof(unsigned char), 1, entrada);
-        int k=0;
+        k = 0;
         for (i = 7; i >= 0; i--) {
             k++;
-            if(j+k>=tam_codificado+1) break; //isso é para evitar que bits lixo sejam descompactados
+
+            if (j+k >= tam_codificado+1) break; // isso é para evitar que bits lixo sejam descompactados
 
             if (bit(byte, i)) {
                 aux = abb_get_dir(aux);
@@ -90,6 +95,7 @@ int main(int argc, char **argv) {
             }
         }
     }
+
 
     /* liberando toda a memória alocada */
     fclose(entrada);
