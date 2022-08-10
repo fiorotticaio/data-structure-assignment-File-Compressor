@@ -125,10 +125,8 @@ void OrdenaLista(Lista * lista){
         precisaTrocar = 0; 
         p = lista->Prim; 
   
-        while (p->prox != q) 
-        { 
-            if (abb_get_peso(p->arvore) > abb_get_peso(p->prox->arvore)) 
-            { 
+        while (p->prox != q) { 
+            if (abb_get_peso(p->arvore) > abb_get_peso(p->prox->arvore)) { 
                 Arv * temp = p->arvore;
                 p->arvore = p->prox->arvore;
                 p->prox->arvore = temp;
@@ -165,6 +163,7 @@ void Aplica_Huffman(Lista * lista){
         p = prox;
 
         InsereArvUltLista(lista, a);
+        OrdenaLista(lista);
     }
 }
 
