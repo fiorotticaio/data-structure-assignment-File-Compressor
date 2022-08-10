@@ -15,9 +15,13 @@ The text inputs used on the tests, are located on `arquivos_de_teste` folder.
 Performance results:
 ```diff
 frase.txt         | 1 line    | 4.0 Kb | Compressed to 4.0 Kb   | (00%)
-texto_pequeno.txt | 413 lines | 44 Kb  | Compressed to 28.0 Kb  | (37%)
-texto_mediano.txt | 2.6k lines| 96 Kb  | Compressed to 72.0 Kb  | (25%)
-biblia.txt        | 32k lines | 3.9 Mb | Compressed to 3.0 Mb   | (23%)
+texto_pequeno.txt | 413 lines | 44 Kb  | Compressed to 24.0 Kb  | (55%)
+texto_mediano.txt | 2.6k lines| 96 Kb  | Compressed to 56.0 Kb  | (58%)
+biblia.txt        | 32k lines | 3.9 Mb | Compressed to 2.3 Mb   | (59%)
+
+imagem.jpg        |           | 36 Kb  | Compressed to 36 Kb    | (00%)
+imagem.png        |           | 8.0 Kb | Compressed to 8.0 Kb   | (00%)
+imagem.jpeg       |           | 12 Kb  | Compressed to 12 Kb    | (00%)
 ```
 >Made by [Matheus Schreiber](https://github.com/matheusschreiber) and [Caio Fiorotti](https://github.com/fiorotticaio) on August 7th, 2022.
 

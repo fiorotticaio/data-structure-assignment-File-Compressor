@@ -72,7 +72,11 @@ int main(int argc, char **argv) {
     Arv * aux = arv_huffman;
     for (j=0;j<tam_codificado;j+=8) {
         fread(&byte, sizeof(unsigned char), 1, entrada);
+        int k=0;
         for (i = 7; i >= 0; i--) {
+            k++;
+            if(j+k>=tam_codificado+1) break; //isso é para evitar que bits lixo sejam descompactados
+
             if (bit(byte, i)) {
                 aux = abb_get_dir(aux);
             } else {

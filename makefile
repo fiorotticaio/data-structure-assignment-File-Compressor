@@ -1,5 +1,5 @@
-name = biblia
-file = txt
+name = integral_de_linha
+file = mp4
 
 all: prog warning verificador 
 

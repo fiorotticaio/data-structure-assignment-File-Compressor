@@ -59,14 +59,14 @@ int main(int argc, unsigned char**argv) {
     unsigned char** tabCode = abb_aloca_tabela(altura+1);
     abb_gera_tabela(tabCode, GetPrimeiroNoLista(listaArvores), "", altura+1);
 
-    
-    /* abrindo o arquivo de entrada de novo pra ler o texto */
+    /* abrindo arquivo de entrada */
     FILE * entrada = fopen(path, "rb");
 
     /* gerando o arquivo de saida */
-    int qtdLetras = strlen(path);
-    path[qtdLetras-4] = '\0'; // tirar a extensão do path
-    FILE* saida = fopen(strcat(path, ".comp"), "wb");
+    char * ext, * file_name;
+    file_name = strtok (path,".");
+    ext = strtok (NULL, ".");
+    FILE* saida = fopen(strcat(file_name, ".comp"), "wb");
 
 
     /* a primeira coisa do arquivo compactado vai ser o tamanho extensao 
@@ -116,7 +116,6 @@ int main(int argc, unsigned char**argv) {
         for(j = 0; j < strlen(tabCode[caractere]); j++) {
             if (tabCode[caractere][j] == '1') bitmapAppendLeastSignificantBit(bm, 1);
             else if (tabCode[caractere][j] == '0') bitmapAppendLeastSignificantBit(bm, 0);
-
             tam_codificado++;
         }
     }
