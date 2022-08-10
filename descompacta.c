@@ -7,6 +7,7 @@
 
 #define MAX_SIZE 3567587328 // Limite de 3 GIGA bytes
 
+/* Retorna 1 caso o bit de análise seja 1 e 0 caso contrário  */
 static unsigned int bit(unsigned char byte, int pos){
     unsigned char aux = (1 << pos);
     return byte & aux;
