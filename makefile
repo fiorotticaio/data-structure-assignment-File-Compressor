@@ -1,4 +1,4 @@
-name = dibres
+name = tudo
 file = mp4
 
 all: prog warning verificador 
