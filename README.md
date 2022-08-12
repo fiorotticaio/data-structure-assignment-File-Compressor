@@ -22,6 +22,7 @@ biblia.txt        | 32k lines | 3.9 Mb | Compressed to 2.3 Mb   | (59%)
 imagem.jpg        |           | 36 Kb  | Compressed to 36 Kb    | (00%)
 imagem.png        |           | 8.0 Kb | Compressed to 8.0 Kb   | (00%)
 imagem.jpeg       |           | 12 Kb  | Compressed to 12 Kb    | (00%)
+tudo.mp4          |           | 156 Kb | Compressed to 88 Kb    | (56%)
 ```
 >Made by [Matheus Schreiber](https://github.com/matheusschreiber) and [Caio Fiorotti](https://github.com/fiorotticaio) on August 7th, 2022.
 

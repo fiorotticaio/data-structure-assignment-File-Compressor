@@ -1,5 +1,5 @@
-name = tudo
-file = mp4
+name = imagem
+file = png
 
 all: prog warning verificador 
 
