@@ -1,5 +1,5 @@
-name = imagem
-file = jpeg
+name = dibres
+file = mp4
 
 all: prog warning verificador 
 
