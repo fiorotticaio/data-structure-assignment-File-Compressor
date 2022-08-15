@@ -1,5 +1,5 @@
-name = imagem
-file = png
+name = biblia
+file = txt
 
 all: prog warning verificador 
 
@@ -17,11 +17,12 @@ warning:
 
 verificador: prog
 	@ echo "\033[1;36m\n[verificador] \033[mTamanho (aprox) dos arquivos:"
-	@ du -h $(name).comp && du -h $(name).$(file) && du -h ./arquivos_de_saida/$(name).$(file)
+	@# du -h $(name).comp && du -h $(name).$(file) && du -h ./arquivos_de_saida/$(name).$(file)
 
-	@ echo "\033[1;36m\n[verificador] \033[mDiff entre os arquivos:"
-	@ -diff $(name).$(file) ./arquivos_de_saida/$(name).$(file)
-	@ echo "---\n"
+	@ du -h $(name).comp && du -h $(name).$(file)
+	@# echo "\033[1;36m\n[verificador] \033[mDiff entre os arquivos:"
+	@# -diff $(name).$(file) ./arquivos_de_saida/$(name).$(file)
+	@# echo "---\n"
 
 val: clear compacta descompacta
 	@ valgrind ./compacta.out $(name).$(file)

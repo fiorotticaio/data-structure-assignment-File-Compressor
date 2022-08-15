@@ -63,8 +63,11 @@ int main(int argc, char **argv) {
     strcat(path, extensao); // juntando com a extensão original
 
     /* gerando o arquivo de saída numa pasta separada pra poder comparar com diff */
-    // TODO: tirar dessa pasta separada e colocar no diretorio raiz mesmo
-    sprintf(diretorio, "arquivos_de_saida/%s", path);
+    // redirecionamento de saida para a pasta 'arquivos de saida'
+    //sprintf(diretorio, "arquivos_de_saida/%s", path);
+    sprintf(diretorio, "%s", path);
+
+
     FILE * saida = fopen(diretorio, "wb");
 
     // lendo tamanho codificado
