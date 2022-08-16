@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "../headers/Arvore_bin.h"
 
 struct arv {
     unsigned char info;
     long int peso;
-    unsigned char* codigo;
     struct arv *esq;
     struct arv *dir;
 };
@@ -20,7 +20,6 @@ Arv* abb_cria(unsigned char caracter, long int peso, Arv* e, Arv* d) {
     Arv* p = (Arv*) malloc(sizeof(Arv));
     
     p->info = caracter;
-    p->codigo = strdup("");
     p->peso = peso;
     p->esq = e;
     p->dir = d;
@@ -30,7 +29,7 @@ Arv* abb_cria(unsigned char caracter, long int peso, Arv* e, Arv* d) {
 void abb_imprime(Arv* a) {
     printf("<");
     if (a != NULL) {
-        if (a->info != '-') printf("[%c - %ld - %s]", a->info, a->peso, a->codigo);
+        if (a->info != '-') printf("[%d - %ld]", a->info, a->peso);
         else printf("[%ld]", a->peso);
         abb_imprime(a->esq);
         abb_imprime(a->dir);
@@ -41,40 +40,13 @@ void abb_imprime(Arv* a) {
 void abb_imprime_formato_graphviz(Arv * a) {
     if (a == NULL) printf("-");   
     else if (a->esq!=NULL && a->dir!=NULL) {
-        // printf("%d.%ld -> ", a->info, a->peso);
         printf("%ld -> ", a->peso);
         abb_imprime_formato_graphviz(a->esq);
-        // printf("%d.%ld -> ", a->info, a->peso);
         printf("%ld -> ", a->peso);
         abb_imprime_formato_graphviz(a->dir);
     } else {
-        // if (a->info==' ') printf("esp%ld\n", a->peso);
-        // else if (a->info=='\n') printf("br%ld\n", a->peso);
-        // else printf("%c%ld\n", a->info, a->peso);
-        // printf("%d.%ld\n", a->info, a->peso);
-        printf("%c.%ld\n", a->info, a->peso);
+        printf("char%d_%ld\n", a->info,a->peso);
     }
-}
-
-void preenche_bitmap(Arv* a, unsigned char caractere, bitmap* bm) {
-    int i = 0;
-
-    if (a == NULL) return;
-    else if (getChar(a) == caractere) {
-        while(a->codigo[i]) {
-            bitmapAppendLeastSignificantBit(bm, a->codigo[i]);
-            // print 1
-            // print a->codido
-            i++;
-        }
-
-    } else {
-        preenche_bitmap(a->esq, caractere, bm);
-        // print 0
-        preenche_bitmap(a->dir, caractere, bm);
-        // print 0
-    }
-
 }
 
 Arv* abb_insere(Arv* a, unsigned char caracter, long int peso) {
@@ -100,24 +72,6 @@ Arv* abb_insere(Arv* a, unsigned char caracter, long int peso) {
     }
 
     return a;
-}
-
-void abb_preenche_codigos(Arv* a, unsigned char * codigo, int indice, char letra){
-    //caso seja o ultimo bit do codigo
-    if (indice == strlen(codigo)) {
-        a->info=letra;
-
-    //caso seja o bit 1 (criar um ramo na direita)
-    } else if (codigo[indice]=='1') {
-        if (a->dir==NULL) a->dir = abb_cria('-', indice+((int)letra), abb_cria_vazia(), abb_cria_vazia());
-        abb_preenche_codigos(a->dir, codigo, indice+1, letra);
-    
-    //caso seja o bit 0 (criar um ramo na esquerda)
-    } else if (codigo[indice]=='0'){
-        if (a->esq==NULL) a->esq = abb_cria('-', indice+((int)letra), abb_cria_vazia(), abb_cria_vazia());
-        abb_preenche_codigos(a->esq, codigo, indice+1, letra);
-    }
-
 }
 
 Arv* abb_retira(Arv* a, unsigned char caracter, long int peso) {
@@ -169,24 +123,19 @@ Arv* abb_libera(Arv* a) {
     if (a != NULL) {
         abb_libera(a->esq);
         abb_libera(a->dir);
-        free(a->codigo);
         free(a);
     }
     return NULL;
 }
 
-void setCodigo(Arv* a, unsigned char* codigo) {
-    a->codigo = realloc(a->codigo, strlen(codigo));
-    strcpy(a->codigo, codigo);
-}
 
-long int getPeso(Arv * a) { return a->peso; }
+long int abb_get_peso(Arv * a) { return a->peso; }
 
-unsigned char getChar(Arv * a) { return a->info; }
+unsigned char abb_get_char(Arv * a) { return a->info; }
 
-Arv * getRamoEsq(Arv * a) { return a->esq; }
+Arv * abb_get_esq(Arv * a) { return a->esq; }
 
-Arv * getRamoDir(Arv * a) { return a->dir; }
+Arv * abb_get_dir(Arv * a) { return a->dir; }
 
 int abb_vazia(Arv* a) { return a == NULL; }
 
@@ -197,40 +146,7 @@ int abb_altura(Arv* a) {
     else return 1 + max(abb_altura(a->esq), abb_altura(a->dir));
 }
 
-void abb_codifica_nos(Arv* a, unsigned char* codigo) {
-    if (a->esq == NULL && a->dir == NULL) { // no folha
-        setCodigo(a, codigo);
-
-    } else if (a->esq == NULL && a->dir != NULL) { // vai pra direita
-        a->dir->codigo = realloc(a->dir->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
-        strcat(codigo, "1");
-        abb_codifica_nos(a->dir, codigo);
-
-    } else if (a->esq != NULL && a->dir == NULL) { // vai pra esquerda
-        a->esq->codigo = realloc(a->esq->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
-        strcat(codigo, "0");
-        abb_codifica_nos(a->esq, codigo);
-
-    } else {
-        unsigned char* aux = strdup(codigo);
-
-        a->esq->codigo = realloc(a->esq->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
-        strcat(codigo, "0");
-        abb_codifica_nos(a->esq, codigo);
-
-        a->dir->codigo = realloc(a->dir->codigo, sizeof(unsigned char)*(strlen(a->codigo) + 1));
-        codigo = realloc(codigo, sizeof(unsigned char)*(strlen(codigo) + 1));
-        strcat(aux, "1");
-        abb_codifica_nos(a->dir, aux);
-
-        free(aux);
-    }
-}
-
-unsigned char** alocaTabela(int colunas) {
+unsigned char** abb_aloca_tabela(int colunas) {
     /* tabela: vetor de strings */
     unsigned char** tabela = (unsigned char**) malloc(sizeof(unsigned char*)*256);
     for (int i = 0; i < 256; i++) {
@@ -240,7 +156,7 @@ unsigned char** alocaTabela(int colunas) {
     return tabela;
 }
 
-void geraTabCode(unsigned char** tabela, Arv* a, char* caminho, int colunas) {
+void abb_gera_tabela(unsigned char** tabela, Arv* a, char* caminho, int colunas) {
     char esq[colunas], dir[colunas];
 
     // verficando se é nó folha
@@ -253,71 +169,96 @@ void geraTabCode(unsigned char** tabela, Arv* a, char* caminho, int colunas) {
         strcpy(dir, caminho);
         strcat(esq, "0");
         strcat(dir, "1");
-        geraTabCode(tabela, a->esq, esq, colunas);
-        geraTabCode(tabela, a->dir, dir, colunas);
+        abb_gera_tabela(tabela, a->esq, esq, colunas);
+        abb_gera_tabela(tabela, a->dir, dir, colunas);
     }
 }
 
-void imprimeTabCode(unsigned char** tabela) {
+void abb_imprime_tabela(unsigned char** tabela) {
     int i = 0;
     for (i = 0; i < 256; i++) {
         if (strlen(tabela[i]) > 0) printf("%d - %c: %s\n", i, i, tabela[i]); // imprimir os que não são zero
     }
 }
 
-void liberaTabCode(unsigned char** tabela) {
+void abb_libera_tabela(unsigned char** tabela) {
     for (int i = 0; i < 256; i++) {
         free(tabela[i]);
     }
     free(tabela);
 }
 
-void codifica(unsigned char** tabela, bitmap* bm, unsigned char caractere) {
-    int i = 0;
-    while(tabela[caractere][i] != '\0') {
-        if (tabela[caractere][i] == '0') {
-            // printf("inserindo 0 da posicao %d de [%s]\n", i, tabela[caractere]);
-            bitmapAppendLeastSignificantBit(bm, 0);
-        } else {
-            bitmapAppendLeastSignificantBit(bm, 1);
-            // printf("inserindo 1 da posicao %d de [%s]\n", i, tabela[caractere]);
+char * decimal_para_binario(int num) {   
+    char bin_invertido[9]; 
+
+    char * bin = malloc(sizeof(char) * 9);
+    int i=0, j, k=0;
+    for(k=0;k<9; k++) bin_invertido[k] = '0';
+    
+    for ( ;num > 0; ){
+        if (num%2) bin_invertido[i++] = '1';
+        else bin_invertido[i++] = '0';
+        num /= 2;
+    }
+    
+    k=0;
+    for (j = 7; j >= 0; j--){
+        bin[k] = bin_invertido[j];
+        k++;
+    }
+    bin[k]='\0';
+
+    return bin;
+}
+
+void abb_serializa(Arv * a, bitmap * bm){
+    int i;
+
+    // nó folha, faz append do bit 1, e em seguida faz o append do codigo decimal ascii do char (em binario)
+    if (a->dir==NULL && a->esq==NULL){
+        bitmapAppendLeastSignificantBit(bm, 1);
+        char * binario = decimal_para_binario((int)a->info);
+        
+        for(i=0;i<8;i++) {
+            if (binario[i] == '1') bitmapAppendLeastSignificantBit(bm, 1);
+            else if (binario[i] == '0') bitmapAppendLeastSignificantBit(bm, 0);
         }
-        i++;
+
+        free(binario);
+    } else {
+        bitmapAppendLeastSignificantBit(bm, 0);
+        abb_serializa(a->esq,bm);
+        abb_serializa(a->dir,bm);
     }
-    
 }
 
-void decodifica(Arv * a, bitmap* bm, FILE * saida) {
-    int k;
-    Arv* aux=a;
+int abb_desserializa(Arv *a, char * serielizacao, int indice){
+    if(serielizacao[indice]=='0'){
+        Arv * esq = abb_cria('-', 0, abb_cria_vazia(), abb_cria_vazia());
+        a->esq = esq;
 
-    //passando por cada bit no bitmap
-    for (k=0;k<bitmapGetLength(bm)-1;k++) {
-        
-        //caso o bit seja 1, ramo da direita da arvore
-        if ((int)bitmapGetBit(bm, k)) aux = getRamoDir(aux);
-        
-        //caso o bit seja 0, ramo da esquerda da arvore
-        else aux = getRamoEsq(aux);
-        
-        //caso o nó seja um nó folha
-        if (abb_vazia(getRamoDir(aux)) && abb_vazia(getRamoEsq(aux))){
-            fprintf(saida, "%c", getChar(aux));
-            aux = a;
-        }        
+        Arv * dir = abb_cria('-', 0, abb_cria_vazia(), abb_cria_vazia());
+        a->dir = dir;
+
+        indice = abb_desserializa(a->esq, serielizacao, indice+1);
+        indice = abb_desserializa(a->dir, serielizacao, indice+1);
+    } else {
+        indice+=1;
+        int i, k=0, num=0;
+        char * bin = malloc(sizeof(char) * 8) ;
+        for(i=0;i<8; i++) bin[i]=serielizacao[indice++];
+        for(i=7;i>=0;i--){
+            if (bin[k]=='1') {
+                num+=pow(2,i);
+            }
+            k++;
+        }
+        free(bin);
+        a->info=(char)num;
+        return indice-1;
     }
-
-
-    //TODO: retirar
-    // int k;
-    // printf("\n(decodifica) imprimindo bitmap\n");
-    // for(k=0;k<bitmapGetLength(bm);k++) {
-    //     printf("%d", bitmapGetBit(bm, k));
-    // }
-
-    
-    
 }
+
 
 
 

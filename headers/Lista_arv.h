@@ -36,10 +36,7 @@ void ImprimeLista(Lista* lista);
  * pré-condição: ponteiro para lista e para árvore existem
  * pós-condição: ponteiro de retorno aponta para lista com a árvore adicionada
  */
-void InsereArvUlt(Lista* lista, Arv* arvore);
-
-//TODO: retirar futuramente?
-// void InsereArvPrim(Lista* lista, Arv* arvore);
+void InsereArvUltLista(Lista* lista, Arv* arvore);
 
 /** Retira uma árvore da lista
  * input: ponteiro para a lista, árvore a ser retirada,
@@ -80,14 +77,6 @@ int calculaAlturaArvore_Huff(Lista* lista);
  * pré-condição: ponteiro para lista existe
  * pós-condição: lista não é modificada
  */
-Arv* getPrimeiroNo(Lista* lista);
-
-/** Codifica todos os nós folha da árvore de huffman (primeira árvore da lista final)
- * input: ponteiro para a lista
- * output: nenhum
- * pré-condição: ponteiro para lista existe
- * pós-condição: campo de código preenchido para todos os nós folha da árvore de huffman
- */
-void CodificaNos(Lista* lista);
+Arv* GetPrimeiroNoLista(Lista* lista);
 
 #endif // LISTA_H

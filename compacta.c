@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "./headers/Lista_arv.h"
 #include "./headers/bitmap.h"
 
+//TODO: verificar necessidade desse max_size
 #define MAX_SIZE 3567587328 // Limite de 3 GIGA bytes
 
 int main(int argc, unsigned char**argv) {
@@ -21,6 +23,11 @@ int main(int argc, unsigned char**argv) {
     sprintf(path, "%s", argv[1]);
     FILE * arquivo = fopen(path, "rb");
 
+    if (arquivo==NULL) {
+        printf("[ERRO] Arquivo não encontrado!\n");
+        assert(1);
+    }
+
     /* pegando a extensão do arquivo de entrada */
     i = 0;
     while (path[i] != '.') i++;
@@ -31,7 +38,7 @@ int main(int argc, unsigned char**argv) {
     caractere = '\0';
     while(!feof(arquivo)){
         fread(&caractere, sizeof(unsigned char), 1, arquivo);
-        if (caractere != '\0') v[caractere] += 1;
+        v[caractere] += 1;
     }
     fclose(arquivo);
 
@@ -40,26 +47,26 @@ int main(int argc, unsigned char**argv) {
     Lista * listaArvores = InicializaListaVazia();
     for(i = 0; i < 256; i++) {
         if (v[i] > 0) {
-            InsereArvUlt(listaArvores, abb_cria((char)i, v[i], abb_cria_vazia(), abb_cria_vazia()));
+            InsereArvUltLista(listaArvores, abb_cria((char)i, v[i], abb_cria_vazia(), abb_cria_vazia()));
         }
     }
 
     OrdenaLista(listaArvores);
     Aplica_Huffman(listaArvores);
-    
+
     /* Montando a tabela de codificação */
     int altura = calculaAlturaArvore_Huff(listaArvores);
-    unsigned char** tabCode = alocaTabela(altura+1);
-    geraTabCode(tabCode, getPrimeiroNo(listaArvores), "", altura+1);
+    unsigned char** tabCode = abb_aloca_tabela(altura+1);
+    abb_gera_tabela(tabCode, GetPrimeiroNoLista(listaArvores), "", altura+1);
 
-    
-    /* abrindo o arquivo de entrada de novo pra ler o texto */
+    /* abrindo arquivo de entrada */
     FILE * entrada = fopen(path, "rb");
 
     /* gerando o arquivo de saida */
-    int qtdLetras = strlen(path);
-    path[qtdLetras-4] = '\0'; // tirar a extensão do path
-    FILE* saida = fopen(strcat(path, ".comp"), "wb");
+    char * ext, * file_name;
+    file_name = strtok (path,".");
+    ext = strtok (NULL, ".");
+    FILE* saida = fopen(strcat(file_name, ".comp"), "wb");
 
 
     /* a primeira coisa do arquivo compactado vai ser o tamanho extensao 
@@ -68,9 +75,26 @@ int main(int argc, unsigned char**argv) {
     fwrite(&tam_extensao, sizeof(int), 1, saida);
     fwrite(extensao, sizeof(unsigned char), tam_extensao, saida);
 
-    /* escrevendo o vetor de frequência no arquivo compactado,
-    ele é nossa chave de decodificação */
-    fwrite(v, sizeof(long int), 256, saida); 
+    //criando a arvore serielizada
+    bitmap * arvore_serielizada = bitmapInit(MAX_SIZE);
+    abb_serializa(GetPrimeiroNoLista(listaArvores), arvore_serielizada);
+
+    int tam_arvore_serielizada = bitmapGetLength(arvore_serielizada);
+    int bits_restantes = tam_arvore_serielizada%8;
+    if (bits_restantes != 0) {
+        while (bits_restantes < 8) {
+            bitmapAppendLeastSignificantBit(arvore_serielizada, 0);
+            bits_restantes++;
+        }
+    }
+
+    //escrevendo o tamanho da arvore serielizada
+    fwrite(&tam_arvore_serielizada, sizeof(int), 1, saida);
+
+    //escrevendo a arvore 
+    for (i = 0; i < bitmapGetLength(arvore_serielizada)/8; i++) {
+        fwrite(&bitmapGetContents(arvore_serielizada)[i], sizeof(unsigned char), 1, saida);
+    }
 
 
     int tam_nao_codificado = 0;
@@ -82,11 +106,9 @@ int main(int argc, unsigned char**argv) {
     
     rewind(entrada); // volta pro início do arquivo
 
-
+    //montando bitmap com conteudo codificado
     bitmap* bm = bitmapInit(MAX_SIZE);
-    
     int tam_codificado = 0;
-
     for (i = 0; i < tam_nao_codificado-1; i++) {
         fread(&caractere, sizeof(unsigned char), 1, entrada);
 
@@ -94,14 +116,13 @@ int main(int argc, unsigned char**argv) {
         for(j = 0; j < strlen(tabCode[caractere]); j++) {
             if (tabCode[caractere][j] == '1') bitmapAppendLeastSignificantBit(bm, 1);
             else if (tabCode[caractere][j] == '0') bitmapAppendLeastSignificantBit(bm, 0);
-
             tam_codificado++;
         }
     }
 
+    /* completando o resto do byte (com zeros) */
     int resto = bitmapGetLength(bm)%8;
     if (resto != 0) {
-        /* completando o resto do byte (com zeros) */
         while (resto < 8) {
             bitmapAppendLeastSignificantBit(bm, 0);
             resto++;
@@ -111,16 +132,17 @@ int main(int argc, unsigned char**argv) {
     // escrevendo o tamanho do conteudo codificado
     fwrite(&tam_codificado, sizeof(int), 1, saida);
 
-    /* escrevendo os bytes no arquivo compactado */
+    /* escrevendo os bytes do conteudo no arquivo compactado */
     for (i = 0; i < bitmapGetLength(bm)/8; i++) {
         fwrite(&bitmapGetContents(bm)[i], sizeof(unsigned char), 1, saida);
     }
 
     /* liberando toda a memória alocada */
     bitmapLibera(bm);
+    bitmapLibera(arvore_serielizada);
     fclose(entrada);
     fclose(saida);
-    liberaTabCode(tabCode);
+    abb_libera_tabela(tabCode);
     LiberaLista(listaArvores);
     free(v);
 

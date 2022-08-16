@@ -1,51 +1,28 @@
-# File Compressor
+# FILE COMPRESSOR
 
-PDF:
-https://docs.google.com/document/d/1lVG9BgJnDPhR-pshuRK7jyqfclTDOxCmTPYO8vjrtjs/edit?usp=sharing
+This is a program that utilises the [Huffman Algorithm](https://en.wikipedia.org/wiki/Huffman_coding), to compress a text file.
 
-## Etapas e TODO's
+It handles a binary search tree and chained lists to perform the compression.
 
-    [x] Usar um menor número de bits para caracteres que aparecem mais vezes
-    
-    [x] implementando com árvore binária que armazena caracteres nas folhas
+The text inputs used on the tests, are located on `arquivos_de_teste` folder.
 
-    [x] caminhos da raiz até a folha que provém a sequência de bits de cada caractere
-        
-        [x] sub-árvore da direita: 1
+>Disclaimer 1: The algorithm was made for text files. Other types like `.pdf` and `.png` are accepted but wont compress as much as `.txt`
 
-        [x] sub-árvore da esquerda: 0
+>Disclaimer 2: Make sure you're using UNIX based files, with `LF` on end of lines, and not DOS based files with `CF-LF`.
 
-    [x] o número de vezes que o caractere aparece é seu peso
+>Disclaimer 3: Max size 3.5 GB.
 
-    [x] primeiro passo: fazer o TAD arvore_bin
+Performance results:
+```diff
+frase.txt         | 1 line    | 4.0 Kb | Compressed to 4.0 Kb   | (00%)
+texto_pequeno.txt | 413 lines | 44 Kb  | Compressed to 24.0 Kb  | (55%)
+texto_mediano.txt | 2.6k lines| 96 Kb  | Compressed to 56.0 Kb  | (58%)
+biblia.txt        | 32k lines | 3.9 Mb | Compressed to 2.3 Mb   | (59%)
 
-	    [x] a info vai ser um caracter
+imagem.jpg        |           | 36 Kb  | Compressed to 36 Kb    | (00%)
+imagem.png        |           | 8.0 Kb | Compressed to 8.0 Kb   | (00%)
+imagem.jpeg       |           | 12 Kb  | Compressed to 12 Kb    | (00%)
+tudo.mp4          |           | 156 Kb | Compressed to 88 Kb    | (56%)
+```
+>Made by [Matheus Schreiber](https://github.com/matheusschreiber) and [Caio Fiorotti](https://github.com/fiorotticaio) on August 7th, 2022.
 
-    	[x] o peso vai ser o número de ocorrências de cada caracter (adquirido daquele vetor)
-	
-    [x] segundo passo: fazer o TAD lista de árvores
-
-        [x] lista encadeada
-
-        [x] função de ordenar
-
-        [x] função de Huffman
-
-    [x] Usar Graphviz online para fazer os diagramas das árvores
-    
-    [x] TROCAR TODOS OS char PARA unsigned char
-
-    [x] Verificar documentação dos cabeçalhos (.h)
-        [ ] Padronizar cabeçalhos e nome das funções do arquivo da arvore 
-        para que todos começem com `abb_`
-
-    [x] Descobrir como usar o bitmap
-        (escrever arquivos .comp)
-
-    [x] Descobrir como serielizar a árvore
-    	- Um long int defininfo o tamanho da árvore, seguido da serielização de 0 para nós internos e 1 para nós folha seguidos dos o bits do caractere
-        - A tabela de codificação direto
-
-    [x] Consertar o erro do strcat no descompacta
-
-    [ ] Fazer funcionar direto pra qualquer arquivo

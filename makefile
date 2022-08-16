@@ -17,15 +17,16 @@ warning:
 
 verificador: prog
 	@ echo "\033[1;36m\n[verificador] \033[mTamanho (aprox) dos arquivos:"
-	@ du -h $(name).comp && du -h $(name).$(file) && du -h ./arquivos_de_saida/$(name).$(file)
+	@# du -h $(name).comp && du -h $(name).$(file) && du -h ./arquivos_de_saida/$(name).$(file)
 
-	@ echo "\033[1;36m\n[verificador] \033[mDiff entre os arquivos:"
-	@ -diff $(name).$(file) ./arquivos_de_saida/$(name).$(file)
-	@ echo "---\n"
+	@ du -h $(name).comp && du -h $(name).$(file)
+	@# echo "\033[1;36m\n[verificador] \033[mDiff entre os arquivos:"
+	@# -diff $(name).$(file) ./arquivos_de_saida/$(name).$(file)
+	@# echo "---\n"
 
 val: clear compacta descompacta
-	@ valgrind ./compacta $(name).$(file)
-	@ valgrind ./descompacta $(name).comp
+	@ valgrind ./compacta.out $(name).$(file)
+	@ valgrind ./descompacta.out $(name).comp
 
 Arvore_bin:
 	@ gcc -c ./implementacoes/Arvore_bin.c -lm
@@ -48,5 +49,5 @@ descompacta: Arvore_bin Lista_arv
 	@ echo "\033[1;32m[executaveis] \033[mArquivo 'descompacta.out' gerado com sucesso! ✅"
 
 clear:
-	@ rm -f *.o compacta descompacta
+	@ rm -f *.o compacta.out descompacta.out *.comp
 	@ echo "\033[1;34m[limpador] \033[mDiretório Limpo! ✅\n"

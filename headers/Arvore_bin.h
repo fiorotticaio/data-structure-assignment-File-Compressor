@@ -6,9 +6,6 @@
 // Tipo Arv (árvore binária)
 typedef struct arv Arv;
 
-
-/*================ FUNÇÕES BÁSICAS ==============================*/
-
 /** Cria uma árvore vazia (nó folha)
  * input: nenhum
  * output: ponteiro para a árvore vazia
@@ -44,15 +41,6 @@ void abb_imprime(Arv* a);
  */
 void abb_imprime_formato_graphviz(Arv * a);
 
-/** Gera o bitmap
- * input: ponteiro para a árvore de huffman, caracter a ser codificado,
- *        e o bitmap que está sendo gerado
- * output: nenhum
- * pré-condição: ponteiro para a árvore existe
- * pós-condição: nenhuma
- */
-void preenche_bitmap(Arv* a, unsigned char caracter, bitmap* bm);
-
 /** Insere um caracter na árovre binária
  * input: ponteiro para a árvore, caracter a ser inserido,
  *        peso do caractere
@@ -62,8 +50,6 @@ void preenche_bitmap(Arv* a, unsigned char caracter, bitmap* bm);
  * pós-condição: ponteiro de retorno aponta para árvore com o caracter adicionado
  */
 Arv* abb_insere(Arv* a, unsigned char caracter, long int peso);
-
-void abb_preenche_codigos(Arv* a, unsigned char * codigo, int indice, char letra);
 
 /** Retira um caracter da árvore binária
  * input: ponteiro para a árvore, caracter a ser retirado,
@@ -83,21 +69,13 @@ Arv* abb_retira(Arv* a, unsigned char caracter, long int peso);
  */
 Arv* abb_libera(Arv* a);
 
-/** Seta o código do nó
- * input: ponteiro para arvore binári e ponteiro para o código a ser setado
- * output: nenhum
- * pré-condição: ponteiro para árvore e código existem
- * pós-condição: campo de código do nó é atualizado
- */
-void setCodigo(Arv* a, unsigned char* codigo);
-
 /** Retorna o peso do caractere localizado em um nó
  * input: ponteiro para arvore com o nó
  * output: inteiro com valor do peso do caractere
  * pré-condição: ponteiro para árvore existe
  * pós-condição: arvore não é alterada
  */
-long int getPeso(Arv * a);
+long int abb_get_peso(Arv * a);
 
 /** Retorna o caractere localizado em um nó
  * input: ponteiro para arvore com o nó
@@ -105,7 +83,7 @@ long int getPeso(Arv * a);
  * pré-condição: ponteiro para árvore existe
  * pós-condição: arvore não é alterada
  */
-unsigned char getChar(Arv * a);
+unsigned char abb_get_char(Arv * a);
 
 /** Retorna o ponteiro para o ramo esquerdo da arvore
  * input: ponteiro para arvore
@@ -113,7 +91,7 @@ unsigned char getChar(Arv * a);
  * pré-condição: ponteiro para árvore existe
  * pós-condição: arvore não é alterada
  */
-Arv * getRamoEsq(Arv * a);
+Arv * abb_get_esq(Arv * a);
 
 /** Retorna o ponteiro para o ramo direito da arvore
  * input: ponteiro para arvore
@@ -121,7 +99,7 @@ Arv * getRamoEsq(Arv * a);
  * pré-condição: ponteiro para árvore existe
  * pós-condição: arvore não é alterada
  */
-Arv * getRamoDir(Arv * a);
+Arv * abb_get_dir(Arv * a);
 
 /** Verifica se a árvore está vazia
  * input: ponteiro para arvore
@@ -139,21 +117,13 @@ int abb_vazia(Arv* a);
  */
 int abb_altura(Arv* a);
 
-/** Codifica todos os nós folha da árvore de huffman
- * input: ponteiro para arvore e ponteiro para o código a ser inserido no nó
- * output: nenhum
- * pré-condição: ponteiro para árvore e código existem
- * pós-condição: campo código de todos os nós folha preenchidos
- */
-void abb_codifica_nos(Arv* a, unsigned char* codigo);
-
 /** Aloca memória para a tabela de codificação
  * input: número de colunas da tabela
  * output: ponteiro para tabela de codificação (ponteiro para vetor de ponteiros)
  * pré-condição: número de colunas válido
  * pós-condição: memória para a tabela de codificação é alocada
  */
-unsigned char** alocaTabela(int colunas);
+unsigned char** abb_aloca_tabela(int colunas);
 
 /** Faz a codificação para a tabela de codificação
  * input: ponteiro para a tabela de codificação, ponteiro para nó raiz da árvore de huffman
@@ -163,7 +133,7 @@ unsigned char** alocaTabela(int colunas);
  *               ponteiro para código existe, número de colunas válido 
  * pós-condição: tabela de codificação é preenchida
  */
-void geraTabCode(unsigned char** tabela, Arv* a, char* caminho, int colunas);
+void abb_gera_tabela(unsigned char** tabela, Arv* a, char* caminho, int colunas);
 
 /** Imprime a tabela de codificação
  * input: ponteiro para a tabela de codificação
@@ -171,7 +141,7 @@ void geraTabCode(unsigned char** tabela, Arv* a, char* caminho, int colunas);
  * pré-condição: ponteiro para a tabela de codificação existe
  * pós-condição: tabela não é alterada
  */
-void imprimeTabCode(unsigned char** tabela);
+void abb_imprime_tabela(unsigned char** tabela);
 
 /** Libera toda a memória alocada para a tabela de codificação
  * input: ponteiro para a tabela de codificação
@@ -179,10 +149,22 @@ void imprimeTabCode(unsigned char** tabela);
  * pré-condição: ponteiro para a tabela de codificação existe
  * pós-condição: toda a memória alocada para a tabela de codificação é liberada
  */
-void liberaTabCode(unsigned char** tabela);
+void abb_libera_tabela(unsigned char** tabela);
 
-void codifica(unsigned char** tabela, bitmap* bm, unsigned char caractere);
+/** Faz a serielização da árvore (transforma em string gigante)
+ * input: ponteiro para a arvore e para string, e inteiro indice
+ * output: inteiro para indice (usado na recursão)
+ * pré-condição: ponteiros existem e indice é 0
+ * pós-condição: árvore é serielizada em uma string única
+ */
+void abb_serializa(Arv * a, bitmap * bm);
 
-void decodifica(Arv * a, bitmap* bm, FILE * saida);
+/** Faz o processo inverso da serielização da árvore
+ * input: ponteiro para a arvore e para string, e inteiro indice
+ * output: inteiro para indice (usado na recursão)
+ * pré-condição: ponteiros existem e indice é 0
+ * pós-condição: string é desserielizada para criar arvore
+ */
+int abb_desserializa(Arv *a, char * serielizacao, int indice);
 
 #endif // ARVORE_BIN

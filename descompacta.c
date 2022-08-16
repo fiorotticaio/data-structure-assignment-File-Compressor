@@ -7,16 +7,15 @@
 
 #define MAX_SIZE 3567587328 // Limite de 3 GIGA bytes
 
+/* Retorna 1 caso o bit de análise seja 1 e 0 caso contrário  */
 static unsigned int bit(unsigned char byte, int pos){
     unsigned char aux = (1 << pos);
     return byte & aux;
 }
 
-
 int main(int argc, char **argv) {
     /* variáveis úteis */
     int i = 0, j = 0, altura = 0, k = 0;
-    long int *v = malloc(sizeof(long int) * 256);  // vetor de frequência
     unsigned char path[100];
     unsigned char diretorio[1000]; // diretório deve ter no máximo 1000 caracteres
 
@@ -24,76 +23,89 @@ int main(int argc, char **argv) {
     sprintf(path, "%s", argv[1]);
     FILE * entrada = fopen(path, "rb");
 
-
     int tam_extensao = 0;
     /* lendo o tamanho da extensão do aquivo a ser compactado */
     fread(&tam_extensao, sizeof(int), 1, entrada);
-    unsigned char * extensao = malloc(sizeof(unsigned char) * (tam_extensao+1)); // +1 para o '\0'
+    unsigned char * extensao = (unsigned char *) malloc(sizeof(unsigned char) * (tam_extensao+1)); // +1 para o '\0'
     
     /* lendo a extensão em sim */
     fread(extensao, sizeof(unsigned char), tam_extensao, entrada);
     extensao[tam_extensao] = '\0';
-    
-    /* lendo o vetor de frequências */
-    fread(v, sizeof(long int), 256, entrada);
-    
 
-    /* inserindo as arvores com as frequências na lista */
-    Lista * listaArvores = InicializaListaVazia();
-    for(i = 0; i < 256; i++) {
-        if (v[i] > 0) {
-            InsereArvUlt(listaArvores, abb_cria((char)i, v[i], abb_cria_vazia(), abb_cria_vazia()));
+    // lendo o tamanho da arvore serielizada
+    int tam_arvore_serielizada = 0;
+    fread(&tam_arvore_serielizada, sizeof(int), 1, entrada);
+
+    //lendo a arvore serielizada
+    unsigned char * serielizacao = (unsigned char *) malloc(sizeof(unsigned char) * (tam_arvore_serielizada+1));// +1 para o '\0'
+    k = 0;
+    unsigned char byte;
+    for(i = 0; i < tam_arvore_serielizada; i+=8){
+        fread(&byte, sizeof(unsigned char), 1, entrada);
+        for (j = 7; j >= 0; j--){
+
+            if (k >= tam_arvore_serielizada) break;
+
+            if (bit(byte, j)) serielizacao[k] = '1';
+            else serielizacao[k] = '0';
+            k++;
         }
     }
+    serielizacao[k]='\0';
 
-    OrdenaLista(listaArvores);
-    Aplica_Huffman(listaArvores);
+    //desserializando a arvore
+    Arv * arv_huffman = abb_cria('-', 0, abb_cria_vazia(), abb_cria_vazia());
+    abb_desserializa(arv_huffman, serielizacao, 0);
+    // abb_imprime_formato_graphviz(arv_huffman);
 
     /* gerando o arquivo de saída */
     path[strlen(path)-5] = '\0'; // tirando o .comp do nome
     strcat(path, extensao); // juntando com a extensão original
 
-
     /* gerando o arquivo de saída numa pasta separada pra poder comparar com diff */
-    // TODO: tirar dessa pasta separada e colocar no diretorio raiz mesmo
-    sprintf(diretorio, "arquivos_de_saida/%s", path);
+    // redirecionamento de saida para a pasta 'arquivos de saida'
+    //sprintf(diretorio, "arquivos_de_saida/%s", path);
+    sprintf(diretorio, "%s", path);
+
 
     FILE * saida = fopen(diretorio, "wb");
 
-    unsigned char byte;
-    Arv * raiz = getPrimeiroNo(listaArvores);
-    Arv * aux = raiz;
-
-
-    int tam_codificado=0;
+    // lendo tamanho codificado
+    int tam_codificado = 0;
     fread(&tam_codificado, sizeof(int), 1, entrada);
 
-    for (j=0;j<tam_codificado;j+=8) {
+    //lendo conteudo do texto compactado e usando a arvore para decodificar
+    Arv * aux = arv_huffman;
+    k = 0;
+    for (j = 0; j < tam_codificado; j += 8) {
         fread(&byte, sizeof(unsigned char), 1, entrada);
-
-
-    // while(fread(&byte, sizeof(unsigned char), 1, entrada)){
+        k = 0;
         for (i = 7; i >= 0; i--) {
+            k++;
+
+            if (j+k >= tam_codificado+1) break; // isso é para evitar que bits lixo sejam descompactados
+
             if (bit(byte, i)) {
-                aux = getRamoDir(aux);
+                aux = abb_get_dir(aux);
             } else {
-                aux = getRamoEsq(aux);
+                aux = abb_get_esq(aux);
             }
 
-            if (getRamoEsq(aux) == NULL && getRamoDir(aux) == NULL) {
-                unsigned char auxChar = getChar(aux);
+            if (abb_get_esq(aux) == NULL && abb_get_dir(aux) == NULL) {
+                unsigned char auxChar = abb_get_char(aux);
                 fwrite(&auxChar, sizeof(unsigned char), 1, saida);
-                aux = raiz;
+                aux = arv_huffman;
             }
         }
     }
 
+
     /* liberando toda a memória alocada */
     fclose(entrada);
     fclose(saida);
-    LiberaLista(listaArvores);
+    abb_libera(arv_huffman);
+    free(serielizacao);
     free(extensao);
-    free(v);
 
     return 0;
 }
